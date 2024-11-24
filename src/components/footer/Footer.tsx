@@ -1,76 +1,32 @@
 "use client";
 
-import React from 'react'
+import React from "react";
 
 const Footer = () => {
   return (
-    <footer>
-    <div className="container">
-        <div className="footer-top row">
-            <div className="col-md-4 foot-logo">
-                <h2>Travel Packages</h2>
-            </div>
-            <div className="col-md-8 foot-addr">
-                <p>Donec venenatis metus at diam condimentum pretiuteger aliquet a turpis quis pel len tesque ueta turpis quis venenatissolelementum</p>
-                <ul>
-                    <li className="pl-0"><i className="fas fa-map-marker-alt"></i> Antonya Street, 23/H-2, Building, TA, AUS </li>
-                    <li><i className="fas fa-mobile-alt"></i> +177 (089) 987665  </li>
-                    <li><i className="far fa-envelope"></i> support@smarteyeapps.com </li>
-                </ul>
-            </div>
+    <footer className="bg-primary-500 text-white py-8">
+      <div className="container mx-auto text-center">
+        <div className="mb-4">
+          <h3 className="text-lg font-semibold">Salah Tours</h3>
+          <p className="text-sm">Adventure Awaits</p>
         </div>
-        <div className="foot-botom row">
-            <div className="col-md-3">
-                <div className="fotter-coo">
-                    <h5>IMPORTANT LINKS</h5>
-                    <ul>
-                        <li><i className="fas fa-caret-right"></i> ABOUT US</li>
-                        <li><i className="fas fa-caret-right"></i> COMPANY PROFILE</li>
-                        <li><i className="fas fa-caret-right"></i> OUR SERVICES</li>
-                        <li><i className="fas fa-caret-right"></i> CONTACT US</li>
-                        <li><i className="fas fa-caret-right"></i> READ BLOG</li>
-                    </ul>
-                </div>
-                
-            </div>
-             <div className="col-md-4">
-                <div className="fotter-coo">
-                    <h5>GLOBAL UPDATE NEWS</h5>
-                    <ul>
-                        <li><i className="fas fa-caret-right"></i> 100 CHILDREN RESCUE FROM WAR ZONE</li>
-                        <li><i className="fas fa-caret-right"></i> THR FRESH HOUSE CHILD</li>
-                        <li><i className="fas fa-caret-right"></i> CREATE AWARENESS IN EDUCATON</li>
-                        <li><i className="fas fa-caret-right"></i> WHAT HAPPEN WHEN WE LIVE!</li>
-                        <li><i className="fas fa-caret-right"></i> READ BLOG</li>
-                    </ul>
-                </div>
-                
-            </div>
-            <div className="col-md-5">
-                <div className="fotter-coo">
-                    <h5>PHOTO GALLERY</h5>
-                    <div className="gallery-row row">
-                        <div className="col-md-4 col-6 gall-col">
-                         
-                        </div>
-                        <div className="col-md-4 col-6 gall-col">
-                        </div>
-                        <div className="col-md-4 col-6 gall-col">
-                        </div>
-                        <div className="col-md-4 col-6 gall-col">
-                        </div>
-                        <div className="col-md-4 col-6 gall-col">
-                        </div>
-                        <div className="col-md-4 col-6 gall-col">
-                        </div>
-                    </div>
-                </div>
-                
-            </div>
-        </div>
-    </div>
-</footer>
-  )
-}
+        <nav className="flex justify-center space-x-4 mb-4">
+          <a href="#about" className="hover:underline">
+            About Us
+          </a>
+          <a href="#contact" className="hover:underline">
+            Contact
+          </a>
+          <a href="#privacy" className="hover:underline">
+            Privacy Policy
+          </a>
+        </nav>
+        <p className="text-sm">
+          &copy; {new Date().getFullYear()} Earth Trekkers. All rights reserved.
+        </p>
+      </div>
+    </footer>
+  );
+};
 
-export default Footer
+export default Footer;

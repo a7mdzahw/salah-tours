@@ -1,9 +1,11 @@
-import { Button as MUIButton } from "@mui/material";
+import InfoSection from "@salah-tours/components/info-section/InfoSection";
+import Categories from "./categories/page";
 
 export default function Home() {
   return (
-    <div className="min-h-screen">
-      <MUIButton variant="outlined">ahmed</MUIButton>
-    </div>
+    <>
+    <InfoSection />
+    <Categories /> 
+    </>
   );
 }

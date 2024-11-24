@@ -1,11 +1,13 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v15-appRouter";
+import { StyledEngineProvider } from "@mui/material";
 
 import "./globals.css";
 
 import Header from "@salah-tours/components/header/Header";
 import Footer from "@salah-tours/components/footer/Footer";
+
 import StyledComponentsRegistry from "@salah-tours/components/ui/styled.registry";
 
 const Montserrat = localFont({
@@ -35,13 +37,15 @@ export default function RootLayout({
       <body
         className={`${Montserrat.variable} ${MontserratBold.variable} antialiased`}
       >
-        <StyledComponentsRegistry>
+        <StyledEngineProvider>
           <AppRouterCacheProvider>
-            <Header />
-            {children}
-            <Footer />
+            <StyledComponentsRegistry>
+              <Header />
+              {children}
+              <Footer />
+            </StyledComponentsRegistry>
           </AppRouterCacheProvider>
-        </StyledComponentsRegistry>
+        </StyledEngineProvider>
       </body>
     </html>
   );
