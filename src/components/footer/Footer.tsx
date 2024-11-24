@@ -2,27 +2,83 @@
 
 import React from "react";
 
+// icons
+import FacebookIcon from "@mui/icons-material/Facebook";
+import InstagramIcon from "@mui/icons-material/Instagram";
+import GitHubIcon from "@mui/icons-material/GitHub";
+import YouTubeIcon from "@mui/icons-material/YouTube";
+import TwitterIcon from "@mui/icons-material/Twitter";
+
+const navigation = {
+  main: [
+    { name: "About", href: "#" },
+    { name: "Blog", href: "#" },
+    { name: "Jobs", href: "#" },
+    { name: "Press", href: "#" },
+    { name: "Accessibility", href: "#" },
+    { name: "Partners", href: "#" },
+  ],
+  social: [
+    {
+      name: "Facebook",
+      href: "#",
+      icon: FacebookIcon,
+    },
+    {
+      name: "Instagram",
+      href: "#",
+      icon: InstagramIcon,
+    },
+    {
+      name: "X",
+      href: "#",
+      icon: TwitterIcon,
+    },
+    {
+      name: "GitHub",
+      href: "#",
+      icon: GitHubIcon,
+    },
+    {
+      name: "YouTube",
+      href: "#",
+      icon: YouTubeIcon,
+    },
+  ],
+};
+
 const Footer = () => {
   return (
-    <footer className="bg-primary-500 text-white py-8">
-      <div className="container mx-auto text-center">
-        <div className="mb-4">
-          <h3 className="text-lg font-semibold">Salah Tours</h3>
-          <p className="text-sm">Adventure Awaits</p>
-        </div>
-        <nav className="flex justify-center space-x-4 mb-4">
-          <a href="#about" className="hover:underline">
-            About Us
-          </a>
-          <a href="#contact" className="hover:underline">
-            Contact
-          </a>
-          <a href="#privacy" className="hover:underline">
-            Privacy Policy
-          </a>
+    <footer className="bg-primary-800">
+      <div className="mx-auto max-w-7xl overflow-hidden px-6 py-20 sm:py-24 lg:px-8">
+        <nav
+          aria-label="Footer"
+          className="-mb-6 flex flex-wrap justify-center gap-x-12 gap-y-3 text-sm/6"
+        >
+          {navigation.main.map((item) => (
+            <a
+              key={item.name}
+              href={item.href}
+              className="text-primary-100 hover:text-primary-300"
+            >
+              {item.name}
+            </a>
+          ))}
         </nav>
-        <p className="text-sm">
-          &copy; {new Date().getFullYear()} Earth Trekkers. All rights reserved.
+        <div className="mt-16 flex justify-center gap-x-10">
+          {navigation.social.map((item) => (
+            <a
+              key={item.name}
+              href={item.href}
+              className="text-primary-100 hover:text-primary-300"
+            >
+              <span className="sr-only">{item.name}</span>
+              <item.icon aria-hidden="true" className="size-6" />
+            </a>
+          ))}
+        </div>
+        <p className="mt-10 text-center text-sm/6 text-primary-100">
+          &copy; 2024 Your Company, Inc. All rights reserved.
         </p>
       </div>
     </footer>

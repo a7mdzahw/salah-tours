@@ -8,13 +8,13 @@ import Destination from "@salah-tours/assets/images/destination/d1.jpg";
 
 const InfoSection = () => {
   return (
-    <div className="bg-white my-8">
-      <div className="relative isolate overflow-hidden bg-gradient-to-b from-primary-100/20 pt-14">
+    <div className="bg-white my-4">
+      <div className="relative isolate overflow-hidden bg-gradient-to-b from-primary-100/20 pt-4">
         <div
           aria-hidden="true"
           className="absolute inset-y-0 right-1/2 -z-10 -mr-96 w-[200%] origin-top-right skew-x-[-30deg] bg-white shadow-xl shadow-primary-600/10 ring-1 ring-primary-100 sm:-mr-80 lg:-mr-96"
         />
-        <div className="mx-auto max-w-7xl px-6 py-32 sm:py-40 lg:px-8">
+        <div className="mx-auto max-w-7xl px-6 py-12 lg:px-8">
           <div className="mx-auto max-w-2xl lg:mx-0 lg:grid lg:max-w-none lg:grid-cols-2 lg:gap-x-16 lg:gap-y-8 xl:grid-cols-1 xl:grid-rows-1 xl:gap-x-8">
             <h1 className="max-w-2xl text-balance text-5xl font-semibold tracking-tight text-primary-800 sm:text-7xl lg:col-span-2 xl:col-auto">
               We’re changing the way people connect

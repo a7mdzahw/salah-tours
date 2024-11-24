@@ -46,7 +46,7 @@ const Header = () => {
 
   return (
     <header className="w-full">
-      <TopBar className="bg-primary-500 h-12 flex gap-3 items-center px-8 text-foreground shadow-lg w-full md:justify-between justify-center">
+      <TopBar className="bg-primary-700 h-12 flex gap-3 items-center px-8 text-primary-100 shadow-lg w-full md:justify-between justify-center">
         <Box fontWeight="bold" component="div" className="hidden md:block">
           <Button variant="text" color="inherit" href="/">
             About
@@ -73,8 +73,9 @@ const Header = () => {
       </TopBar>
 
       {path === "/" && (
-        <MiddleHero className="bg-primary-500 h-24 flex items-end p-48">
-          <Typography className="text-white !text-[100px] font-bold">
+        <MiddleHero className="bg-primary-500 h-24 flex items-end p-8 md:p-52 relative">
+          <div className="bg-primary-500 absolute inset-0 opacity-30" />
+          <Typography className="text-white !text-[100px] !font-bold relative z-20">
             Salah Tours
           </Typography>
         </MiddleHero>

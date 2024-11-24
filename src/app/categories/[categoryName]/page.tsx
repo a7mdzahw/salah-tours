@@ -4,20 +4,20 @@ import CategoryCard from "@salah-tours/components/category-card/CategoryCard";
 import { Box } from "@mui/material";
 
 type Props = {
-  params: {
+  params: Promise<{
     categoryName: string;
-  };
+  }>;
 };
 
 export default async function Example(props: Props) {
-  const categoryName = await props.params.categoryName;
+  const { categoryName } = await props.params;
 
   console.log(categoryName);
   const category = categories.find((cat) => cat.name === categoryName);
 
   return (
     <div className=" w-full  ">
-      <div
+      <section
         className="py-24 text-center relative "
         style={{
           backgroundImage: `url(${category?.imageUri})`,
@@ -35,9 +35,7 @@ export default async function Example(props: Props) {
             {category?.description}
           </p>
         </article>
-      </div>
-
-
+      </section>
 
       <Box className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 p-8">
         {categories.map((category) => (

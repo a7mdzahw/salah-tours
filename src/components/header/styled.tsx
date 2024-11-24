@@ -10,5 +10,10 @@ export const BottomBar = styled.div`
 `;
 export const MiddleHero = styled.div`
   background: url(${Hero.src}) no-repeat center center/cover;
-  min-height: 89vh;
+  min-height: 60vh;
+
+
+  @media screen and (max-width: 768px) {
+    min-height: 50vh;
+  }
 `;
