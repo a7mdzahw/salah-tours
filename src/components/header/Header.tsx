@@ -13,10 +13,14 @@ import WhatsAppIcon from "@mui/icons-material/WhatsApp";
 // images
 import Logo from "@salah-tours/assets/images/logo.png";
 import clsx from "clsx";
+import { usePathname } from "next/navigation";
 
 const Header = () => {
   const [fixed, setFixed] = React.useState(false);
   const placeholderRef = React.useRef<HTMLDivElement>(null);
+  const path = usePathname();
+
+  console.log(path);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -68,11 +72,13 @@ const Header = () => {
         </Box>
       </TopBar>
 
-      <MiddleHero className="bg-primary-500 h-24 flex items-end p-48">
-        <Typography className="text-white !text-[100px] font-bold">
-          Salah Tours
-        </Typography>
-      </MiddleHero>
+      {path === "/" && (
+        <MiddleHero className="bg-primary-500 h-24 flex items-end p-48">
+          <Typography className="text-white !text-[100px] font-bold">
+            Salah Tours
+          </Typography>
+        </MiddleHero>
+      )}
 
       <BottomPlaceholder ref={placeholderRef} className="placeholder">
         <BottomBar

@@ -1,4 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
+import Link from "next/link";
 import React from "react";
 
 type Props = {
@@ -9,6 +10,7 @@ type Props = {
 
 const CategoryCard = (props: Props) => {
   return (
+    <Link href={`/categories/${props.name}`}>
       <div className="group relative aspect-[2/1] overflow-hidden rounded-lg sm:row-span-2 sm:aspect-square">
         <img
           alt={props.name}
@@ -21,18 +23,14 @@ const CategoryCard = (props: Props) => {
         />
         <div className="absolute inset-0 flex items-end p-6">
           <div>
-            <h3 className="font-semibold text-white">
-              <a href="#">
-                <span className="absolute inset-0" />
-               {props.name} 
-              </a>
-            </h3>
+            <h3 className="font-semibold text-white">{props.name}</h3>
             <p aria-hidden="true" className="mt-1 text-sm text-white">
-             {props.description} 
+              {props.description}
             </p>
           </div>
         </div>
       </div>
+    </Link>
   );
 };
 
