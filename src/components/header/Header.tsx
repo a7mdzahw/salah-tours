@@ -1,83 +1,50 @@
 "use client";
-import React, { useEffect } from "react";
 import { TopBar, BottomBar, MiddleHero, BottomPlaceholder } from "./styled";
-import { Box, Button, Stack, Typography } from "@mui/material";
 import Image from "next/image";
-
+import useNavbarPosition from "@salah-tours/hooks/useNavbarPosition";
 // Icons
-import InstagramIcon from "@mui/icons-material/Instagram";
-import FacebookIcon from "@mui/icons-material/Facebook";
-import TwitterIcon from "@mui/icons-material/Twitter";
-import WhatsAppIcon from "@mui/icons-material/WhatsApp";
+import { Facebook, Instagram, Twitter, MessageCircle } from "lucide-react";
 
 // images
 import Logo from "@salah-tours/assets/images/logo.png";
 import clsx from "clsx";
 import { usePathname } from "next/navigation";
+import Link from "next/link";
 
 const Header = () => {
-  const [fixed, setFixed] = React.useState(false);
-  const placeholderRef = React.useRef<HTMLDivElement>(null);
   const path = usePathname();
-
-  console.log(path);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      if (placeholderRef.current) {
-        const placeholderTop =
-          placeholderRef.current!.getBoundingClientRect().top;
-
-        // Toggle sticky class when bar reaches or leaves the top
-        if (placeholderTop <= 0) {
-          setFixed(true);
-        } else {
-          setFixed(false);
-        }
-      }
-    };
-
-    window.addEventListener("scroll", handleScroll);
-
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
-  }, []);
+  const { fixed, placeholderRef } = useNavbarPosition();
 
   return (
-    <header className="w-full">
+    <header className="w-full z-50">
       <TopBar className="bg-primary-700 h-12 flex gap-3 items-center px-8 text-primary-100 shadow-lg w-full md:justify-between justify-center">
-        <Box fontWeight="bold" component="div" className="hidden md:block">
-          <Button variant="text" color="inherit" href="/">
-            About
-          </Button>
-          <Button variant="text" color="inherit" href="/contact-us">
-            Contact US
-          </Button>
-        </Box>
+        <div className="hidden md:flex gap-4 items-center">
+          <Link href="/about">About</Link>
+          <Link href="/contact">Contact US</Link>
+        </div>
 
-        <Box component="div">
-          <Button variant="text" color="inherit" href="/">
-            <FacebookIcon />
-          </Button>
-          <Button variant="text" color="inherit" href="/">
-            <InstagramIcon />
-          </Button>
-          <Button variant="text" color="inherit" href="/">
-            <TwitterIcon />
-          </Button>
-          <Button variant="text" color="inherit" href="/">
-            <WhatsAppIcon />
-          </Button>
-        </Box>
+        <div className="flex gap-8 items-center">
+          <Link href="/fb/salah-tours">
+            <Facebook />
+          </Link>
+          <Link href="/ig/salah-tours">
+            <Instagram />
+          </Link>
+          <Link href="/twitter/salah-tours">
+            <Twitter />
+          </Link>
+          <Link href="/message/salah-tours">
+            <MessageCircle />
+          </Link>
+        </div>
       </TopBar>
 
       {path === "/" && (
-        <MiddleHero className="bg-primary-500 h-24 flex items-end p-8 md:p-52 relative">
-          <div className="bg-primary-500 absolute inset-0 opacity-30" />
-          <Typography className="text-white !text-[100px] !font-bold relative z-20">
+        <MiddleHero className="bg-primary-500 h-24 flex items-center p-8 md:p-52 relative justify-center">
+          <div className="bg-primary-800 absolute inset-0 opacity-30" />
+          <h1 className="text-primary-200 shadow-2xl !text-[100px] !font-bold z-20 pb-24">
             Salah Tours
-          </Typography>
+          </h1>
         </MiddleHero>
       )}
 
@@ -87,29 +54,18 @@ const Header = () => {
             "fixed top-0 left-0 right-0 z-50 bg-white": fixed,
           })}
         >
-          <Stack
-            direction="row"
-            className="justify-between w-full items-center py-1"
-          >
-            <Box>
+          <div className="flex justify-between w-full items-center py-1">
+            <div>
               <Image src={Logo} alt="logo" width={100} height={50} />
-            </Box>
+            </div>
 
-            <Box className="text-primary-700 flex gap-4 items-center">
-              <Button variant="text" color="inherit" href="/">
-                Home
-              </Button>
-              <Button variant="text" color="inherit" href="/services">
-                Services
-              </Button>
-              <Button variant="text" color="inherit" href="/products">
-                Products
-              </Button>
-              <Button variant="text" color="inherit" href="/blog">
-                Blog
-              </Button>
-            </Box>
-          </Stack>
+            <div className="text-primary-700 flex gap-4 items-center">
+              <Link href="/">Home</Link>
+              <Link href="/services">Services</Link>
+              <Link href="/products">Products</Link>
+              <Link href="/blog">Blog</Link>
+            </div>
+          </div>
         </BottomBar>
       </BottomPlaceholder>
     </header>

@@ -3,11 +3,7 @@
 import React from "react";
 
 // icons
-import FacebookIcon from "@mui/icons-material/Facebook";
-import InstagramIcon from "@mui/icons-material/Instagram";
-import GitHubIcon from "@mui/icons-material/GitHub";
-import YouTubeIcon from "@mui/icons-material/YouTube";
-import TwitterIcon from "@mui/icons-material/Twitter";
+import { Facebook, Instagram, Github, Youtube, Twitter } from "lucide-react";
 
 const navigation = {
   main: [
@@ -22,27 +18,27 @@ const navigation = {
     {
       name: "Facebook",
       href: "#",
-      icon: FacebookIcon,
+      icon: Facebook,
     },
     {
       name: "Instagram",
       href: "#",
-      icon: InstagramIcon,
+      icon: Instagram,
     },
     {
       name: "X",
       href: "#",
-      icon: TwitterIcon,
+      icon: Twitter,
     },
     {
       name: "GitHub",
       href: "#",
-      icon: GitHubIcon,
+      icon: Github,
     },
     {
       name: "YouTube",
       href: "#",
-      icon: YouTubeIcon,
+      icon: Youtube,
     },
   ],
 };

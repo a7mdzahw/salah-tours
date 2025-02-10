@@ -1,32 +1,21 @@
 "use client";
 
 import React from "react";
-import Slider from "react-slick";
-import { Card, CardMedia } from "@mui/material";
+import Slider, {Settings} from "react-slick";
 
 // Import the CSS for the carousel
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-
-interface Tour {
-  id: string;
-  name: string;
-  description: string;
-  image: string;
-  days?: {
-    day: number;
-    title: string;
-    description: string;
-  }[];
-}
 interface Props {
-  tours: Tour[];
+  images: string[];
 }
 
-const ImageSlider = ({ tours }: Props) => {
-  const settings = {
+const ImageSlider = ({ images }: Props) => {
+  const baseUrl = process.env.NEXT_PUBLIC_API_URL + "/uploads/";
+
+  const settings:Settings = {
     dots: true,
-    infinite: true,
+    infinite: images.length > 1,
     speed: 500,
     slidesToShow: 1,
     slidesToScroll: 1,
@@ -48,16 +37,15 @@ const ImageSlider = ({ tours }: Props) => {
 
   return (
     <Slider {...settings}>
-      {tours.map((tour) => (
-        <Card key={tour.name} className="w-full">
-          <CardMedia
-            className="h-96 w-96"
-            component="img"
+      {images.map((image) => (
+        <div key={image + Math.random()} className="w-full">
+          <img
+            className="h-[550px] object-cover w-full object-center"
             height="50"
-            image={tour.image}
-            alt={tour.name}
+            src={baseUrl + image}
+            alt={image}
           />
-        </Card>
+        </div>
       ))}
     </Slider>
   );

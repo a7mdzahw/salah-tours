@@ -8,6 +8,10 @@ export default {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        exo2: "var(--font-exo2)",
+        "exo2-italic": "var(--font-exo2-italic)",
+      },
       colors: {
         // best shade of mint green
         primary: {

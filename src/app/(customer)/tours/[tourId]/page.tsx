@@ -1,16 +1,46 @@
-import { tours } from "@salah-tours/mocks/tours";
+"use client";
+
 import React from "react";
 import ImageSlider from "./components/ImageSlider";
 import Button from "@salah-tours/components/ui/button/Button";
+import { useParams, useRouter } from "next/navigation";
+import { client } from "@salah-tours/helpers/client";
+import { useQuery } from "@tanstack/react-query";
 
-type Props = {
-  params: Promise<{ tourId: string }>;
-};
+interface Tour {
+  id: string;
+  name: string;
+  image: string;
+  description: string;
+  catalogImages: string[];
+  days: {
+    day: number;
+    title: string;
+    description: string;
+  }[];
+}
 
-const page = async (props: Props) => {
-  const { tourId } = await props.params;
+const TourDetails = () => {
+  const { tourId } = useParams();
+  const router = useRouter();
 
-  const tour = tours.find((tour) => tour.id === tourId);
+  const {
+    data: tour,
+    isLoading,
+    isError,
+  } = useQuery<Tour>({
+    queryKey: ["tours", tourId],
+    queryFn: () => client(`/tours/${tourId}`),
+  });
+
+  if (isLoading) {
+    return <p>Loading...</p>;
+  }
+
+  if (isError) {
+    return <p>Error fetching tour</p>;
+  }
+
   return (
     <div>
       <section
@@ -23,7 +53,7 @@ const page = async (props: Props) => {
       >
         <div className="bg-primary-800 absolute z-10 inset-0 opacity-80" />
 
-        <article className="z-50 relative">
+        <article className="z-40 relative">
           <h1 className="text-4xl font-bold tracking-tight text-white uppercase">
             {tour?.name}
           </h1>
@@ -34,7 +64,7 @@ const page = async (props: Props) => {
       </section>
 
       <section className="p-8 w-full md:w-2/3 md:mx-auto">
-        <ImageSlider tours={tours} />
+        <ImageSlider images={tour?.catalogImages || []} />
       </section>
 
       <section className="px-8">
@@ -52,7 +82,11 @@ const page = async (props: Props) => {
       </section>
 
       <section className="w-full p-8 flex justify-center md:justify-start">
-        <Button color="primary" className="!px-6 !py-3 w-96">
+        <Button
+          color="primary"
+          className="!px-6 !py-3 w-96"
+          onClick={() => router.push(`/tours/${tourId}/book`)}
+        >
           Book Now
         </Button>
       </section>
@@ -60,4 +94,4 @@ const page = async (props: Props) => {
   );
 };
 
-export default page;
+export default TourDetails;

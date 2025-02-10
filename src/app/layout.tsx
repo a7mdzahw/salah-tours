@@ -1,25 +1,20 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
-import { AppRouterCacheProvider } from "@mui/material-nextjs/v15-appRouter";
-import { StyledEngineProvider } from "@mui/material";
 
 import "./globals.css";
 
-import Header from "@salah-tours/components/header/Header";
-import Footer from "@salah-tours/components/footer/Footer";
+import { Providers } from "./providers";
 
-import StyledComponentsRegistry from "@salah-tours/components/ui/styled.registry";
-
-const Montserrat = localFont({
-  src: "../assets/fonts/Montserrat-Regular.ttf",
-  variable: "--font-montserrat",
-  weight: "100 400",
+const exoFont = localFont({
+  src: "../assets/fonts/Exo2.ttf",
+  variable: "--font-exo2",
+  weight: "100 400 700",
 });
 
-const MontserratBold = localFont({
-  src: "../assets/fonts/Montserrat-Bold.ttf",
-  variable: "--font-montserrat-bold",
-  weight: "500 700",
+const exoItalicFont = localFont({
+  src: "../assets/fonts/Exo2-Italic.ttf",
+  variable: "--font-exo2-italic",
+  weight: "100 400 700",
 });
 
 export const metadata: Metadata = {
@@ -35,17 +30,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${Montserrat.variable} ${MontserratBold.variable} antialiased`}
+        className={`${exoFont.variable} ${exoItalicFont.variable} antialiased font-exo2`}
       >
-        <StyledEngineProvider>
-          <AppRouterCacheProvider>
-            <StyledComponentsRegistry>
-              <Header />
-              {children}
-              <Footer />
-            </StyledComponentsRegistry>
-          </AppRouterCacheProvider>
-        </StyledEngineProvider>
+        <Providers>{children}</Providers>
       </body>
     </html>
   );
