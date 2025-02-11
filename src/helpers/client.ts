@@ -5,7 +5,7 @@ export async function client<T>(
   configs?: AxiosRequestConfig
 ) {
   const defaultConfigs: AxiosRequestConfig = {
-    baseURL: process.env.NEXT_PUBLIC_API_URL,
+    baseURL: '/api',
     headers: {
       "Content-Type": "application/json",
     },

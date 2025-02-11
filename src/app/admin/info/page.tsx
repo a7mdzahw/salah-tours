@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { client } from "@salah-tours/helpers/client";
 import Button from "@salah-tours/components/ui/button/Button";
-import { Upload, X } from "lucide-react";
+import { X } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -88,15 +88,6 @@ export default function InfoManagement() {
     },
   });
 
-  const handleBannerChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setSelectedBanner(file);
-      setValue("bannerUrl", file.name);
-      const url = URL.createObjectURL(file);
-      setPreviewUrl(url);
-    }
-  };
 
   const removeBanner = () => {
     setSelectedBanner(null);

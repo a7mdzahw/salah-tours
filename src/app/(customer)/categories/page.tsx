@@ -5,14 +5,7 @@ import React from "react";
 import CategoryCard from "@salah-tours/components/category-card/CategoryCard";
 import { client } from "@salah-tours/helpers/client";
 import { useQuery } from "@tanstack/react-query";
-
-interface Category {
-  id: string;
-  name: string;
-  imageUri: string;
-  description: string;
-}
-
+import { Category } from "@entities/Category";
 const Categories = () => {
   const {
     data: categories,
@@ -20,7 +13,7 @@ const Categories = () => {
     isError,
   } = useQuery<Category[]>({
     queryKey: ["categories", "main"],
-    queryFn: () => client("/categories/main"),
+    queryFn: () => client<Category[]>("/categories/main"),
   });
 
   if (isLoading) {

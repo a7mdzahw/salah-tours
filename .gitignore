@@ -42,3 +42,15 @@ next-env.d.ts
 # environments
 .env.local
 .env.development.local
+
+# Environment variables
+.env
+.env.*.local
+
+# TypeORM
+/ormconfig.json
+/ormconfig.ts
+/ormconfig.js
+
+# uploads
+public/uploads/*

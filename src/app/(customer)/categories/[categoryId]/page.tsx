@@ -5,28 +5,9 @@ import CategoryCard from "@salah-tours/components/category-card/CategoryCard";
 import { useQuery } from "@tanstack/react-query";
 import { client } from "@salah-tours/helpers/client";
 import { useParams } from "next/navigation";
+import { Category } from "@entities/Category";
 import TourCard from "@salah-tours/components/tour-card/TourCard";
 
-interface Tour {
-  id: string;
-  name: string;
-  description: string;
-  image: string;
-  days: {
-    day: number;
-    title: string;
-    description: string;
-  }[];
-}
-
-interface Category {
-  id: string;
-  name: string;
-  imageUri: string;
-  description: string;
-  subCategories: Category[];
-  tours: Tour[];
-}
 
 export default function CategoryDetails() {
   const { categoryId } = useParams();
@@ -101,7 +82,7 @@ export default function CategoryDetails() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
             {category?.tours?.map((tour) => (
               <TourCard
-                key={tour.name}
+                key={tour.id}
                 id={tour.id}
                 name={tour.name}
                 imageUri={tour.image}

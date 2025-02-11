@@ -6,19 +6,7 @@ import Button from "@salah-tours/components/ui/button/Button";
 import { useParams, useRouter } from "next/navigation";
 import { client } from "@salah-tours/helpers/client";
 import { useQuery } from "@tanstack/react-query";
-
-interface Tour {
-  id: string;
-  name: string;
-  image: string;
-  description: string;
-  catalogImages: string[];
-  days: {
-    day: number;
-    title: string;
-    description: string;
-  }[];
-}
+import { Tour } from "@entities/Tour";
 
 const TourDetails = () => {
   const { tourId } = useParams();

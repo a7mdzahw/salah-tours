@@ -1,29 +1,53 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import { client } from "@salah-tours/helpers/client";
 import Button from "@salah-tours/components/ui/button/Button";
 import { Plus, Edit, Trash } from "lucide-react";
 import Link from "next/link";
-
-interface Tour {
-  id: string;
-  name: string;
-  description: string;
-  price: number;
-  duration: number;
-  categoryId: string;
-  image: string;
-}
+import { Tour } from "@entities/Tour";
+import { toast, Toaster } from "react-hot-toast";
+import { ConfirmDialog } from "../components/ConfirmDialog";
 
 export default function ToursManagement() {
   const { data: tours } = useQuery<Tour[]>({
-    queryKey: ["admin", "tours"],
-    queryFn: () => client("/tours"),
+    queryKey: ["tours"],
+    queryFn: () => client<Tour[]>("/tours"),
   });
+
+  const queryClient = useQueryClient();
+  
+  const deleteTourMutation = useMutation({
+    mutationFn: (tourId: number) =>
+      client(`/tours/${tourId}`, {
+        method: "DELETE",
+      }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["tours"] });
+      toast.success("Tour deleted successfully");
+    },
+    onError: () => {
+      toast.error("Failed to delete tour");
+    }
+  });
+
+  const handleDelete = async (tour: Tour) => {
+    toast((t) => (
+      <ConfirmDialog
+        t={t}
+        title="Delete Tour"
+        message={`Are you sure you want to delete "${tour.name}"? This action cannot be undone.`}
+        onConfirm={() => deleteTourMutation.mutateAsync(tour.id)}
+      />
+    ), {
+      duration: Infinity,
+      position: "top-center",
+    });
+  };
 
   return (
     <div>
+      <Toaster />
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-2xl font-bold">Tours Management</h1>
         <Link href="/admin/tours/new">
@@ -55,7 +79,12 @@ export default function ToursManagement() {
                         <Edit className="h-4 w-4" />
                       </Button>
                     </Link>
-                    <Button color="primary" className="p-2">
+                    <Button 
+                      color="primary" 
+                      className="p-2"
+                      onClick={() => handleDelete(tour)}
+                      disabled={deleteTourMutation.isPending}
+                    >
                       <Trash className="h-4 w-4" />
                     </Button>
                   </div>

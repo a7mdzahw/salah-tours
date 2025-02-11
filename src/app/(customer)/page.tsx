@@ -6,13 +6,7 @@ import { client } from "@salah-tours/helpers/client";
 import { useQuery } from "@tanstack/react-query";
 import { FloatingWhatsApp } from "react-floating-whatsapp";
 import Categories from "./categories/page";
-
-interface Tour {
-  id: string;
-  name: string;
-  image: string;
-  description: string;
-}
+import { Tour } from "@entities/Tour";
 
 export default function Home() {
   const {

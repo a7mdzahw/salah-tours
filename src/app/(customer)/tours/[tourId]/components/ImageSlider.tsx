@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import Slider, {Settings} from "react-slick";
+import Slider, { Settings } from "react-slick";
 
 // Import the CSS for the carousel
 import "slick-carousel/slick/slick.css";
@@ -11,9 +11,7 @@ interface Props {
 }
 
 const ImageSlider = ({ images }: Props) => {
-  const baseUrl = process.env.NEXT_PUBLIC_API_URL + "/uploads/";
-
-  const settings:Settings = {
+  const settings: Settings = {
     dots: true,
     infinite: images.length > 1,
     speed: 500,
@@ -42,8 +40,8 @@ const ImageSlider = ({ images }: Props) => {
           <img
             className="h-[550px] object-cover w-full object-center"
             height="50"
-            src={baseUrl + image}
             alt={image}
+            src={image}
           />
         </div>
       ))}

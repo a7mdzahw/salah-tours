@@ -7,9 +7,10 @@ import { client } from "@salah-tours/helpers/client";
 import Button from "@salah-tours/components/ui/button/Button";
 import { ArrowLeft, Plus as PlusIcon, Trash as TrashIcon, Upload, X } from "lucide-react";
 import Link from "next/link";
-import { set, useFieldArray, useForm } from "react-hook-form";
+import { useFieldArray, useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Tour } from "@entities/Tour";
 
 const daySchema = z.object({
   day: z.number().min(1),
@@ -38,7 +39,7 @@ export default function NewTour() {
   const router = useRouter();
   const [selectedImages, setSelectedImages] = useState<File[]>([]);
   const [previewUrls, setPreviewUrls] = useState<string[]>([]);
-  
+
   const {
     setValue,
     register,
@@ -64,17 +65,17 @@ export default function NewTour() {
   });
 
   const { data: categories } = useQuery<Category[]>({
-    queryKey: ["admin", "categories"],
-    queryFn: () => client("/categories"),
+    queryKey: ["admin", "categories", "sub"],
+    queryFn: () => client("/categories/sub"),
   });
 
   const uploadImagesMutation = useMutation({
-    mutationFn: async (tourId: string) => {
+    mutationFn: async (tourId: number) => {
       const formData = new FormData();
       selectedImages.forEach((file) => {
         formData.append('catalogImages', file);
       });
-      
+
       return client(`/tours/${tourId}/images`, {
         method: "POST",
         data: formData,
@@ -86,11 +87,12 @@ export default function NewTour() {
   });
 
   const createTourMutation = useMutation({
-    mutationFn: (data: TourFormData) => client("/tours", {
+    mutationFn: (data: TourFormData) => client<Tour>("/tours", {
       method: "POST",
       data,
     }),
-    onSuccess: async (response: any) => {
+    onSuccess: async (response: Tour) => {
+      console.log(response);
       if (selectedImages.length > 0) {
         await uploadImagesMutation.mutateAsync(response.id);
       }
@@ -102,7 +104,7 @@ export default function NewTour() {
     const files = Array.from(e.target.files || []);
     setSelectedImages((prev) => [...prev, ...files]);
     setValue("image", files[0].name);
-    
+
     // Create preview URLs for the new images
     files.forEach((file) => {
       const url = URL.createObjectURL(file);
@@ -228,8 +230,8 @@ export default function NewTour() {
             <div className="mt-2 space-y-4">
               <div className="flex flex-wrap gap-4">
                 {previewUrls.map((url, index) => (
-                  <div 
-                    key={index} 
+                  <div
+                    key={index}
                     className="relative group w-32 h-32 border rounded-lg overflow-hidden"
                   >
                     <img
@@ -247,7 +249,7 @@ export default function NewTour() {
                   </div>
                 ))}
               </div>
-              
+
               <div className="flex items-center justify-center w-full">
                 <label className="w-full flex flex-col items-center px-4 py-6 bg-white rounded-lg border-2 border-dashed border-gray-300 cursor-pointer hover:border-primary-500">
                   <Upload className="h-8 w-8 text-gray-400" />
@@ -263,7 +265,7 @@ export default function NewTour() {
                   />
                 </label>
               </div>
-              
+
               {uploadImagesMutation.isPending && (
                 <p className="text-sm text-gray-500">
                   Uploading images...

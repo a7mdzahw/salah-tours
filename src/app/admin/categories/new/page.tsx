@@ -4,65 +4,85 @@ import { useRouter } from "next/navigation";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { client } from "@salah-tours/helpers/client";
 import Button from "@salah-tours/components/ui/button/Button";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Upload, X } from "lucide-react";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useState } from "react";
+import { Category } from "@entities/Category";
 
 const categoryFormSchema = z.object({
   name: z.string().min(1, "Category name is required"),
   description: z.string().min(10, "Description must be at least 10 characters"),
-  parentCategoryId: z.string().nullable(),
-  imageUri: z.string().min(1, "Image URL is required"),
+  parentCategoryId: z.string().optional(),
 });
 
 type CategoryFormData = z.infer<typeof categoryFormSchema>;
 
-interface Category {
-  id: string;
-  name: string;
-  description: string;
-  imageUri: string;
-  parentCategoryId: string | null;
-}
-
 export default function NewCategory() {
   const router = useRouter();
+  const [selectedImage, setSelectedImage] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string>("");
 
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting },
+    formState: { errors },
   } = useForm<CategoryFormData>({
     resolver: zodResolver(categoryFormSchema),
-    defaultValues: {
-      name: "",
-      description: "",
-      parentCategoryId: null,
-      imageUri: "",
+  });
+
+  const uploadImageMutation = useMutation({
+    mutationFn: async (categoryId: string) => {
+      if (!selectedImage) return;
+
+      const formData = new FormData();
+      formData.append('image', selectedImage);
+
+      return client(`/categories/${categoryId}/image`, {
+        method: "POST",
+        data: formData,
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
     },
   });
 
-  const { data: categories } = useQuery<Category[]>({
-    queryKey: ["categories"],
-    queryFn: () => client("/categories"),
-  });
-
-  const mainCategories = categories?.filter(cat => !cat.parentCategoryId) || [];
-
   const createCategoryMutation = useMutation({
-    mutationFn: (data: CategoryFormData) => client("/categories", {
+    mutationFn: (data: CategoryFormData) => client<Category>("/categories", {
       method: "POST",
       data,
     }),
-    onSuccess: () => {
+    onSuccess: async (response) => {
+      if (selectedImage) {
+        await uploadImageMutation.mutateAsync(response.id);
+      }
       router.push("/admin/categories");
     },
   });
 
-  const onSubmit = (data: CategoryFormData) => {
-    createCategoryMutation.mutate(data);
+  const { data: mainCategories } = useQuery<Category[]>({
+    queryKey: ["categories", "main"],
+    queryFn: () => client<Category[]>("/categories/main"),
+  });
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setSelectedImage(file);
+      const url = URL.createObjectURL(file);
+      setPreviewUrl(url);
+    }
+  };
+
+  const removeImage = () => {
+    setSelectedImage(null);
+    if (previewUrl) {
+      URL.revokeObjectURL(previewUrl);
+    }
+    setPreviewUrl("");
   };
 
   return (
@@ -76,7 +96,8 @@ export default function NewCategory() {
         <h1 className="text-2xl font-bold">Create New Category</h1>
       </div>
 
-      <form onSubmit={handleSubmit(onSubmit)} className="max-w-2xl bg-white p-6 rounded-lg shadow-sm">
+      <form onSubmit={handleSubmit((data) => createCategoryMutation.mutate(data))} 
+        className="max-w-2xl bg-white p-6 rounded-lg shadow-sm">
         <div className="space-y-6">
           <div>
             <label htmlFor="name" className="block text-sm font-medium text-gray-700">
@@ -115,7 +136,7 @@ export default function NewCategory() {
               className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 focus:border-primary-500 focus:outline-none focus:ring-primary-500"
             >
               <option value="">None (Create as main category)</option>
-              {mainCategories.map((category) => (
+              {mainCategories?.map((category) => (
                 <option key={category.id} value={category.id}>
                   {category.name}
                 </option>
@@ -127,17 +148,42 @@ export default function NewCategory() {
           </div>
 
           <div>
-            <label htmlFor="imageUri" className="block text-sm font-medium text-gray-700">
-              Image URL
+            <label className="block text-sm font-medium text-gray-700">
+              Category Image
             </label>
-            <input
-              {...register("imageUri")}
-              type="url"
-              className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 focus:border-primary-500 focus:outline-none focus:ring-primary-500"
-            />
-            {errors.imageUri && (
-              <p className="mt-1 text-sm text-red-600">{errors.imageUri.message}</p>
-            )}
+            <div className="mt-2 space-y-4">
+              {previewUrl && (
+                <div className="relative w-32 h-32">
+                  <img
+                    src={previewUrl}
+                    alt="Preview"
+                    className="w-full h-full object-cover rounded-lg"
+                  />
+                  <button
+                    type="button"
+                    onClick={removeImage}
+                    className="absolute top-2 right-2 p-1 bg-red-500 rounded-full text-white"
+                  >
+                    <X className="h-4 w-4" />
+                  </button>
+                </div>
+              )}
+
+              <div className="flex items-center justify-center w-full">
+                <label className="w-full flex flex-col items-center px-4 py-6 bg-white rounded-lg border-2 border-dashed border-gray-300 cursor-pointer hover:border-primary-500">
+                  <Upload className="h-8 w-8 text-gray-400" />
+                  <span className="mt-2 text-sm text-gray-500">
+                    Click to upload image
+                  </span>
+                  <input
+                    type="file"
+                    className="hidden"
+                    accept="image/*"
+                    onChange={handleImageChange}
+                  />
+                </label>
+              </div>
+            </div>
           </div>
 
           <div className="flex justify-end gap-4">
@@ -147,9 +193,11 @@ export default function NewCategory() {
             <Button
               type="submit"
               color="primary"
-              disabled={isSubmitting || createCategoryMutation.isPending}
+              disabled={createCategoryMutation.isPending || uploadImageMutation.isPending}
             >
-              {createCategoryMutation.isPending ? "Creating..." : "Create Category"}
+              {createCategoryMutation.isPending || uploadImageMutation.isPending
+                ? "Creating..."
+                : "Create Category"}
             </Button>
           </div>
         </div>

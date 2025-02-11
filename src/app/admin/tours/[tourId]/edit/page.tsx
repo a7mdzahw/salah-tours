@@ -10,6 +10,8 @@ import { useFieldArray, useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState, useEffect } from "react";
+import { Tour } from "@entities/Tour";
+import { Category } from "@entities/Category";
 
 const daySchema = z.object({
   day: z.number().min(1),
@@ -22,17 +24,12 @@ const tourFormSchema = z.object({
   description: z.string().min(10, "Description must be at least 10 characters"),
   price: z.number().min(0, "Price must be positive"),
   duration: z.number().min(1, "Duration must be at least 1 hour"),
-  categoryId: z.string().min(1, "Category is required"),
+  categoryId: z.number().min(1, "Category is required"),
   image: z.string(),
   days: z.array(daySchema).min(1, "At least one day is required"),
 });
 
 type TourFormData = z.infer<typeof tourFormSchema>;
-
-interface Category {
-  id: string;
-  name: string;
-}
 
 export default function EditTour() {
   const router = useRouter();
@@ -40,9 +37,9 @@ export default function EditTour() {
   const [selectedImages, setSelectedImages] = useState<File[]>([]);
   const [previewUrls, setPreviewUrls] = useState<string[]>([]);
 
-  const { data: tour } = useQuery({
+  const { data: tour } = useQuery<Tour>({
     queryKey: ["tours", params.tourId],
-    queryFn: () => client<any>(`/tours/${params.tourId}`),
+    queryFn: () => client<Tour>(`/tours/${params.tourId}`),
   });
 
   const {
@@ -59,7 +56,7 @@ export default function EditTour() {
       description: "",
       price: 0,
       duration: 1,
-      categoryId: "",
+      categoryId: 0,
       image: "",
       days: [{ day: 1, title: "", description: "" }],
     },
@@ -68,10 +65,19 @@ export default function EditTour() {
   // Set form values when tour data is loaded
   useEffect(() => {
     if (tour) {
-      reset(tour);
-      if (tour.catalogImages?.length) {
-        setPreviewUrls(tour.catalogImages);
-      }
+      reset({
+        name: tour.name,
+        description: tour.description,
+        price: tour.price,
+        duration: tour.duration,
+        categoryId: tour.categoryId,
+        image: tour.image,
+        days: tour.days.map((day) => ({
+          day: day.day,
+          title: day.title,
+          description: day.description,
+        })),
+      });
     }
   }, [tour, reset]);
 
@@ -81,8 +87,8 @@ export default function EditTour() {
   });
 
   const { data: categories } = useQuery<Category[]>({
-    queryKey: ["categories"],
-    queryFn: () => client("/categories"),
+    queryKey: ["categories", "sub"],
+    queryFn: () => client<Category[]>("/categories/sub"),
   });
 
   const uploadImagesMutation = useMutation({
@@ -234,48 +240,43 @@ export default function EditTour() {
             )}
           </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Tour Images
-            </label>
-            <div className="mt-2 space-y-4">
-              <div className="flex flex-wrap gap-4">
-                {previewUrls.map((url, index) => (
-                  <div
-                    key={index}
-                    className="relative group w-32 h-32 border rounded-lg overflow-hidden"
-                  >
-                    <img
-                      src={process.env.NEXT_PUBLIC_API_URL + "/uploads/" + url}
-                      alt={`Preview ${index + 1}`}
-                      className="w-full h-full object-cover"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => removeImage(index)}
-                      className="absolute top-2 right-2 p-1 bg-red-500 rounded-full text-white opacity-0 group-hover:opacity-100 transition-opacity"
-                    >
-                      <X className="h-4 w-4" />
-                    </button>
-                  </div>
-                ))}
-              </div>
+          <div className="mt-4">
+            <label className="block text-sm font-medium text-gray-700">Catalog Images</label>
+            <div className="mt-1 flex items-center gap-4">
+              <input
+                type="file"
+                multiple
+                accept="image/*"
+                onChange={handleImageChange}
+                className="hidden"
+                id="catalog-images"
+              />
+              <label
+                htmlFor="catalog-images"
+                className="cursor-pointer inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
+              >
+                <Upload className="h-4 w-4 mr-2" />
+                Upload Images
+              </label>
+            </div>
 
-              <div className="flex items-center justify-center w-full">
-                <label className="w-full flex flex-col items-center px-4 py-6 bg-white rounded-lg border-2 border-dashed border-gray-300 cursor-pointer hover:border-primary-500">
-                  <Upload className="h-8 w-8 text-gray-400" />
-                  <span className="mt-2 text-sm text-gray-500">
-                    Click to upload images
-                  </span>
-                  <input
-                    type="file"
-                    className="hidden"
-                    multiple
-                    accept="image/*"
-                    onChange={handleImageChange}
+            <div className="mt-4 grid grid-cols-4 gap-4">
+              {previewUrls.map((url, index) => (
+                <div key={index} className="relative">
+                  <img
+                    src={url.startsWith('blob:') ? url : url}
+                    alt={`Preview ${index + 1}`}
+                    className="w-full h-32 object-cover rounded-lg"
                   />
-                </label>
-              </div>
+                  <button
+                    type="button"
+                    onClick={() => removeImage(index)}
+                    className="absolute top-1 right-1 p-1 bg-red-500 rounded-full text-white"
+                  >
+                    <X className="h-4 w-4" />
+                  </button>
+                </div>
+              ))}
             </div>
           </div>
 
