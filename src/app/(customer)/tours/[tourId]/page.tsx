@@ -34,7 +34,7 @@ const TourDetails = () => {
       <section
         className="py-24 text-center relative"
         style={{
-          backgroundImage: `url(${tour?.image})`,
+          backgroundImage: `url(${tour?.catalogImages?.[0]})`,
           backgroundSize: "cover",
           backgroundPosition: "center",
         }}

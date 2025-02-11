@@ -84,7 +84,7 @@ export default function CategoryDetails() {
                 key={tour.id}
                 id={tour.id}
                 name={tour.name}
-                imageUri={tour.image}
+                imageUri={tour.catalogImages?.[0]}
                 description={tour.description}
               />
             ))}

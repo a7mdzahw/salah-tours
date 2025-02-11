@@ -3,6 +3,7 @@ import { AppDataSource, initializeDB } from "@lib/db";
 
 import { Tour } from "@entities/Tour";
 import { Category } from "@entities/Category";
+import { IsNull } from "typeorm";
 
 export async function GET() {
   try {
@@ -24,7 +25,7 @@ export async function GET() {
       ]);
 
     const mainCategories = await categoryRepository.count({
-      where: { parentCategoryId: undefined },
+      where: { parentCategoryId: IsNull() },
     });
 
     const subCategories = totalCategories - mainCategories;
@@ -40,7 +41,7 @@ export async function GET() {
     console.error("Error fetching stats:", error);
     return NextResponse.json(
       { error: "Failed to fetch stats" },
-      { status: 500 },
+      { status: 500 }
     );
   }
 }

@@ -29,9 +29,6 @@ export class Tour {
   @Column({ name: "category_id", type: "string" })
   categoryId: string;
 
-  @Column({ type: "varchar", nullable: true })
-  image: string;
-
   @Column("simple-array", { nullable: true })
   catalogImages: string[];
 

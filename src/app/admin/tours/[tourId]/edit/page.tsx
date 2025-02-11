@@ -31,7 +31,6 @@ const tourFormSchema = z.object({
   price: z.number().min(0, "Price must be positive"),
   duration: z.number().min(1, "Duration must be at least 1 hour"),
   categoryId: z.string().min(1, "Category is required"),
-  image: z.string(),
   days: z.array(daySchema).min(1, "At least one day is required"),
 });
 
@@ -49,7 +48,6 @@ export default function EditTour() {
   });
 
   const {
-    setValue,
     register,
     control,
     handleSubmit,
@@ -63,7 +61,6 @@ export default function EditTour() {
       price: 0,
       duration: 1,
       categoryId: "",
-      image: "",
       days: [{ day: 1, title: "", description: "" }],
     },
   });
@@ -77,7 +74,6 @@ export default function EditTour() {
         price: tour.price,
         duration: tour.duration,
         categoryId: tour.categoryId,
-        image: tour.image,
         days: tour.days.map((day) => ({
           day: day.day,
           title: day.title,
@@ -85,6 +81,7 @@ export default function EditTour() {
         })),
       });
     }
+    setPreviewUrls(tour?.catalogImages || []);
   }, [tour, reset]);
 
   const { fields, append, remove } = useFieldArray({
@@ -131,7 +128,6 @@ export default function EditTour() {
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
     setSelectedImages((prev) => [...prev, ...files]);
-    setValue("image", files[0].name);
 
     files.forEach((file) => {
       const url = URL.createObjectURL(file);
