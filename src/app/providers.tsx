@@ -12,9 +12,7 @@ interface ProvidersProps {
 export function Providers({ children }: ProvidersProps) {
   return (
     <QueryClientProvider client={queryClient}>
-      <StyledComponentsRegistry>
-        {children}
-      </StyledComponentsRegistry>
+      <StyledComponentsRegistry>{children}</StyledComponentsRegistry>
     </QueryClientProvider>
   );
 }

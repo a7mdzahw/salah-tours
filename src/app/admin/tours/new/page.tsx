@@ -5,7 +5,13 @@ import { useRouter } from "next/navigation";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { client } from "@salah-tours/helpers/client";
 import Button from "@salah-tours/components/ui/button/Button";
-import { ArrowLeft, Plus as PlusIcon, Trash as TrashIcon, Upload, X } from "lucide-react";
+import {
+  ArrowLeft,
+  Plus as PlusIcon,
+  Trash as TrashIcon,
+  Upload,
+  X,
+} from "lucide-react";
 import Link from "next/link";
 import { useFieldArray, useForm } from "react-hook-form";
 import { z } from "zod";
@@ -73,24 +79,25 @@ export default function NewTour() {
     mutationFn: async (tourId: number) => {
       const formData = new FormData();
       selectedImages.forEach((file) => {
-        formData.append('catalogImages', file);
+        formData.append("catalogImages", file);
       });
 
       return client(`/tours/${tourId}/images`, {
         method: "POST",
         data: formData,
         headers: {
-          'Content-Type': 'multipart/form-data',
+          "Content-Type": "multipart/form-data",
         },
       });
     },
   });
 
   const createTourMutation = useMutation({
-    mutationFn: (data: TourFormData) => client<Tour>("/tours", {
-      method: "POST",
-      data,
-    }),
+    mutationFn: (data: TourFormData) =>
+      client<Tour>("/tours", {
+        method: "POST",
+        data,
+      }),
     onSuccess: async (response: Tour) => {
       console.log(response);
       if (selectedImages.length > 0) {
@@ -140,10 +147,16 @@ export default function NewTour() {
         <h1 className="text-2xl font-bold">Create New Tour</h1>
       </div>
 
-      <form onSubmit={handleSubmit(onSubmit)} className="max-w-2xl bg-white p-6 rounded-lg shadow-sm">
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="max-w-2xl bg-white p-6 rounded-lg shadow-sm"
+      >
         <div className="space-y-6">
           <div>
-            <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+            <label
+              htmlFor="name"
+              className="block text-sm font-medium text-gray-700"
+            >
               Tour Name
             </label>
             <input
@@ -157,7 +170,10 @@ export default function NewTour() {
           </div>
 
           <div>
-            <label htmlFor="description" className="block text-sm font-medium text-gray-700">
+            <label
+              htmlFor="description"
+              className="block text-sm font-medium text-gray-700"
+            >
               Description
             </label>
             <textarea
@@ -166,13 +182,18 @@ export default function NewTour() {
               className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 focus:border-primary-500 focus:outline-none focus:ring-primary-500"
             />
             {errors.description && (
-              <p className="mt-1 text-sm text-red-600">{errors.description.message}</p>
+              <p className="mt-1 text-sm text-red-600">
+                {errors.description.message}
+              </p>
             )}
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label htmlFor="price" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="price"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Price
               </label>
               <input
@@ -183,12 +204,17 @@ export default function NewTour() {
                 className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 focus:border-primary-500 focus:outline-none focus:ring-primary-500"
               />
               {errors.price && (
-                <p className="mt-1 text-sm text-red-600">{errors.price.message}</p>
+                <p className="mt-1 text-sm text-red-600">
+                  {errors.price.message}
+                </p>
               )}
             </div>
 
             <div>
-              <label htmlFor="duration" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="duration"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Duration (hours)
               </label>
               <input
@@ -198,13 +224,18 @@ export default function NewTour() {
                 className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 focus:border-primary-500 focus:outline-none focus:ring-primary-500"
               />
               {errors.duration && (
-                <p className="mt-1 text-sm text-red-600">{errors.duration.message}</p>
+                <p className="mt-1 text-sm text-red-600">
+                  {errors.duration.message}
+                </p>
               )}
             </div>
           </div>
 
           <div>
-            <label htmlFor="categoryId" className="block text-sm font-medium text-gray-700">
+            <label
+              htmlFor="categoryId"
+              className="block text-sm font-medium text-gray-700"
+            >
               Category
             </label>
             <select
@@ -219,7 +250,9 @@ export default function NewTour() {
               ))}
             </select>
             {errors.categoryId && (
-              <p className="mt-1 text-sm text-red-600">{errors.categoryId.message}</p>
+              <p className="mt-1 text-sm text-red-600">
+                {errors.categoryId.message}
+              </p>
             )}
           </div>
 
@@ -267,9 +300,7 @@ export default function NewTour() {
               </div>
 
               {uploadImagesMutation.isPending && (
-                <p className="text-sm text-gray-500">
-                  Uploading images...
-                </p>
+                <p className="text-sm text-gray-500">Uploading images...</p>
               )}
             </div>
           </div>
@@ -358,7 +389,11 @@ export default function NewTour() {
             <Button
               type="submit"
               color="primary"
-              disabled={isSubmitting || createTourMutation.isPending || uploadImagesMutation.isPending}
+              disabled={
+                isSubmitting ||
+                createTourMutation.isPending ||
+                uploadImagesMutation.isPending
+              }
             >
               {createTourMutation.isPending || uploadImagesMutation.isPending
                 ? "Creating..."
@@ -369,4 +404,4 @@ export default function NewTour() {
       </form>
     </div>
   );
-} 
+}

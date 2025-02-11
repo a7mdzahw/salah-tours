@@ -45,7 +45,7 @@ export default function ToursManagement() {
         duration: Infinity,
         position: "top-center",
         className: "!max-w-fit",
-      }
+      },
     );
   };
 

@@ -61,23 +61,24 @@ export default function EditCategory() {
       if (!selectedImage) return;
 
       const formData = new FormData();
-      formData.append('image', selectedImage);
+      formData.append("image", selectedImage);
 
       return client(`/categories/${params.categoryId}/image`, {
         method: "POST",
         data: formData,
         headers: {
-          'Content-Type': 'multipart/form-data',
+          "Content-Type": "multipart/form-data",
         },
       });
     },
   });
 
   const updateCategoryMutation = useMutation({
-    mutationFn: (data: CategoryFormData) => client(`/categories/${params.categoryId}`, {
-      method: "PUT",
-      data,
-    }),
+    mutationFn: (data: CategoryFormData) =>
+      client(`/categories/${params.categoryId}`, {
+        method: "PUT",
+        data,
+      }),
     onSuccess: async () => {
       if (selectedImage) {
         await uploadImageMutation.mutateAsync();
@@ -121,7 +122,10 @@ export default function EditCategory() {
       <form onSubmit={handleSubmit(onSubmit)} className="max-w-2xl">
         <div className="space-y-6 bg-white p-6 rounded-lg shadow-sm">
           <div>
-            <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+            <label
+              htmlFor="name"
+              className="block text-sm font-medium text-gray-700"
+            >
               Name
             </label>
             <input
@@ -135,7 +139,10 @@ export default function EditCategory() {
           </div>
 
           <div>
-            <label htmlFor="description" className="block text-sm font-medium text-gray-700">
+            <label
+              htmlFor="description"
+              className="block text-sm font-medium text-gray-700"
+            >
               Description
             </label>
             <textarea
@@ -144,12 +151,17 @@ export default function EditCategory() {
               className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 focus:border-primary-500 focus:outline-none focus:ring-primary-500"
             />
             {errors.description && (
-              <p className="mt-1 text-sm text-red-600">{errors.description.message}</p>
+              <p className="mt-1 text-sm text-red-600">
+                {errors.description.message}
+              </p>
             )}
           </div>
 
           <div>
-            <label htmlFor="parentCategoryId" className="block text-sm font-medium text-gray-700">
+            <label
+              htmlFor="parentCategoryId"
+              className="block text-sm font-medium text-gray-700"
+            >
               Parent Category
             </label>
             <select
@@ -164,7 +176,9 @@ export default function EditCategory() {
               ))}
             </select>
             {errors.parentCategoryId && (
-              <p className="mt-1 text-sm text-red-600">{errors.parentCategoryId.message}</p>
+              <p className="mt-1 text-sm text-red-600">
+                {errors.parentCategoryId.message}
+              </p>
             )}
           </div>
 
@@ -214,7 +228,10 @@ export default function EditCategory() {
             <Button
               type="submit"
               color="primary"
-              disabled={updateCategoryMutation.isPending || uploadImageMutation.isPending}
+              disabled={
+                updateCategoryMutation.isPending ||
+                uploadImageMutation.isPending
+              }
             >
               {updateCategoryMutation.isPending || uploadImageMutation.isPending
                 ? "Saving..."
@@ -225,4 +242,4 @@ export default function EditCategory() {
       </form>
     </div>
   );
-} 
+}

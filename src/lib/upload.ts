@@ -16,7 +16,11 @@ interface UploadedFile {
   path: string;
 }
 
-export async function uploadFiles(request: NextRequest, fieldName: string, maxCount = 1) {
+export async function uploadFiles(
+  request: NextRequest,
+  fieldName: string,
+  maxCount = 1,
+) {
   try {
     const formData = await request.formData();
     const files = formData.getAll(fieldName);
@@ -36,7 +40,9 @@ export async function uploadFiles(request: NextRequest, fieldName: string, maxCo
 
       // Validate file type
       if (!isValidFileType(file.type)) {
-        throw new Error("Invalid file type. Only images (jpg, png, webp) are allowed");
+        throw new Error(
+          "Invalid file type. Only images (jpg, png, webp) are allowed",
+        );
       }
 
       // Validate file size (5MB)
@@ -50,21 +56,21 @@ export async function uploadFiles(request: NextRequest, fieldName: string, maxCo
       const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
       const filename = `${fieldName}-${uniqueSuffix}${path.extname(file.name)}`;
       const filePath = path.join(uploadDir, filename);
-      
+
       await fs.promises.writeFile(filePath, buffer);
-      
+
       savedFiles.push({
         filename,
         originalname: file.name,
         mimetype: file.type,
         size: file.size,
-        path: filePath
+        path: filePath,
       });
     }
 
     return {
       file: savedFiles[0], // For single file uploads
-      files: savedFiles,   // For multiple file uploads
+      files: savedFiles, // For multiple file uploads
     };
   } catch (error) {
     throw error;
@@ -77,9 +83,9 @@ function isValidFileType(mimetype: string): boolean {
 }
 
 export function handleUploadError(error: any) {
-  console.error('Upload error:', error);
+  console.error("Upload error:", error);
   return NextResponse.json(
     { error: error.message || "Error uploading file" },
-    { status: 500 }
+    { status: 500 },
   );
-} 
+}

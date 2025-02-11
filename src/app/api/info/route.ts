@@ -7,13 +7,16 @@ export async function GET() {
     await initializeDB();
     const infoRepository = AppDataSource.getRepository(Info);
     const info = await infoRepository.findOne({
-      where: { id: 1 }
+      where: { id: 1 },
     });
 
     return NextResponse.json(info);
   } catch (error) {
-    console.error('Error fetching info:', error);
-    return NextResponse.json({ error: 'Failed to fetch info' }, { status: 500 });
+    console.error("Error fetching info:", error);
+    return NextResponse.json(
+      { error: "Failed to fetch info" },
+      { status: 500 },
+    );
   }
 }
 
@@ -24,7 +27,7 @@ export async function PUT(request: Request) {
 
     const infoRepository = AppDataSource.getRepository(Info);
     let info = await infoRepository.findOne({
-      where: { id: 1 }
+      where: { id: 1 },
     });
 
     if (!info) {
@@ -33,7 +36,7 @@ export async function PUT(request: Request) {
         id: 1,
         title,
         description,
-        bannerUrl
+        bannerUrl,
       });
     } else {
       // Update existing info
@@ -45,7 +48,10 @@ export async function PUT(request: Request) {
     await infoRepository.save(info);
     return NextResponse.json(info);
   } catch (error) {
-    console.error('Error updating info:', error);
-    return NextResponse.json({ error: 'Failed to update info' }, { status: 500 });
+    console.error("Error updating info:", error);
+    return NextResponse.json(
+      { error: "Failed to update info" },
+      { status: 500 },
+    );
   }
-} 
+}

@@ -63,23 +63,24 @@ export default function InfoManagement() {
       if (!selectedBanner) return;
 
       const formData = new FormData();
-      formData.append('banner', selectedBanner);
+      formData.append("banner", selectedBanner);
 
       return client("/info/banner", {
         method: "POST",
         data: formData,
         headers: {
-          'Content-Type': 'multipart/form-data',
+          "Content-Type": "multipart/form-data",
         },
       });
     },
   });
 
   const updateInfoMutation = useMutation({
-    mutationFn: (data: InfoFormData) => client("/info", {
-      method: "PUT",
-      data,
-    }),
+    mutationFn: (data: InfoFormData) =>
+      client("/info", {
+        method: "PUT",
+        data,
+      }),
     onSuccess: async () => {
       if (selectedBanner) {
         await uploadBannerMutation.mutateAsync();
@@ -87,7 +88,6 @@ export default function InfoManagement() {
       router.refresh();
     },
   });
-
 
   const removeBanner = () => {
     setSelectedBanner(null);
@@ -99,11 +99,16 @@ export default function InfoManagement() {
     <div>
       <h1 className="text-2xl font-bold mb-8">Homepage Information</h1>
 
-      <form onSubmit={handleSubmit((data) => updateInfoMutation.mutate(data))}
-        className="max-w-2xl bg-white p-6 rounded-lg shadow-sm">
+      <form
+        onSubmit={handleSubmit((data) => updateInfoMutation.mutate(data))}
+        className="max-w-2xl bg-white p-6 rounded-lg shadow-sm"
+      >
         <div className="space-y-6">
           <div>
-            <label htmlFor="title" className="block text-sm font-medium text-gray-700">
+            <label
+              htmlFor="title"
+              className="block text-sm font-medium text-gray-700"
+            >
               Homepage Title
             </label>
             <input
@@ -112,12 +117,17 @@ export default function InfoManagement() {
               className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 focus:border-primary-500 focus:outline-none focus:ring-primary-500"
             />
             {errors.title && (
-              <p className="mt-1 text-sm text-red-600">{errors.title.message}</p>
+              <p className="mt-1 text-sm text-red-600">
+                {errors.title.message}
+              </p>
             )}
           </div>
 
           <div>
-            <label htmlFor="description" className="block text-sm font-medium text-gray-700">
+            <label
+              htmlFor="description"
+              className="block text-sm font-medium text-gray-700"
+            >
               Homepage Description
             </label>
             <textarea
@@ -126,7 +136,9 @@ export default function InfoManagement() {
               className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 focus:border-primary-500 focus:outline-none focus:ring-primary-500"
             />
             {errors.description && (
-              <p className="mt-1 text-sm text-red-600">{errors.description.message}</p>
+              <p className="mt-1 text-sm text-red-600">
+                {errors.description.message}
+              </p>
             )}
           </div>
 
@@ -140,7 +152,9 @@ export default function InfoManagement() {
               className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 focus:border-primary-500 focus:outline-none focus:ring-primary-500"
             />
             {errors.bannerUrl && (
-              <p className="mt-1 text-sm text-red-600">{errors.bannerUrl.message}</p>
+              <p className="mt-1 text-sm text-red-600">
+                {errors.bannerUrl.message}
+              </p>
             )}
             <div className="mt-2 space-y-4">
               {previewUrl && (
@@ -159,8 +173,6 @@ export default function InfoManagement() {
                   </button>
                 </div>
               )}
-
-
             </div>
           </div>
 
@@ -168,13 +180,19 @@ export default function InfoManagement() {
             <Button
               type="submit"
               color="primary"
-              disabled={isSubmitting || updateInfoMutation.isPending || uploadBannerMutation.isPending}
+              disabled={
+                isSubmitting ||
+                updateInfoMutation.isPending ||
+                uploadBannerMutation.isPending
+              }
             >
-              {updateInfoMutation.isPending || uploadBannerMutation.isPending ? "Saving..." : "Save Changes"}
+              {updateInfoMutation.isPending || uploadBannerMutation.isPending
+                ? "Saving..."
+                : "Save Changes"}
             </Button>
           </div>
         </div>
       </form>
     </div>
   );
-} 
+}

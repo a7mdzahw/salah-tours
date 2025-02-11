@@ -19,8 +19,6 @@ const InfoSection = () => {
 
   return (
     <section className="relative overflow-hidden bg-gradient-to-br from-primary-900 via-primary-800 to-primary-700 py-16 sm:py-24">
-
-      
       {/* Decorative dots */}
       <div className="absolute inset-0 bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:16px_16px] opacity-5" />
 

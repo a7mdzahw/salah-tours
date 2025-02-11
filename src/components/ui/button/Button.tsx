@@ -8,9 +8,15 @@ export default function Button({
   return (
     <button
       className={clsx(
-        { "!bg-primary-600 !text-white px-4 py-2 rounded-md": props.color === "primary" },
-        { "!bg-gray-200 !text-gray-600 px-4 py-2 rounded-md": props.color === "ghost" },
-        className
+        {
+          "!bg-primary-600 !text-white px-4 py-2 rounded-md":
+            props.color === "primary",
+        },
+        {
+          "!bg-gray-200 !text-gray-600 px-4 py-2 rounded-md":
+            props.color === "ghost",
+        },
+        className,
       )}
       {...props}
     />

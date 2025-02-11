@@ -5,7 +5,7 @@ import { uploadFiles, handleUploadError } from "@lib/upload";
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: Promise<{ tourId: string }> }
+  { params }: { params: Promise<{ tourId: string }> },
 ) {
   try {
     await initializeDB();
@@ -25,8 +25,8 @@ export async function POST(
     }
 
     // Add uploaded files to tour
-    const filenames = files.map(file => `/uploads/${file.filename}`);
-    
+    const filenames = files.map((file) => `/uploads/${file.filename}`);
+
     tour.catalogImages = [...(tour.catalogImages || []), ...filenames];
     await tourRepository.save(tour);
 
@@ -34,4 +34,4 @@ export async function POST(
   } catch (error) {
     return handleUploadError(error);
   }
-} 
+}

@@ -5,7 +5,7 @@ import { uploadFiles, handleUploadError } from "@lib/upload";
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: Promise<{ categoryId: string }> }
+  { params }: { params: Promise<{ categoryId: string }> },
 ) {
   try {
     await initializeDB();
@@ -14,12 +14,15 @@ export async function POST(
 
     const category = await categoryRepository.findOneBy({ id: categoryId });
     if (!category) {
-      return NextResponse.json({ error: "Category not found" }, { status: 404 });
+      return NextResponse.json(
+        { error: "Category not found" },
+        { status: 404 },
+      );
     }
 
     // Handle file upload
     const { file } = await uploadFiles(request, "image");
-    
+
     if (!file) {
       return NextResponse.json({ error: "No file uploaded" }, { status: 400 });
     }

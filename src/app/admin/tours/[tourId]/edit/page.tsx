@@ -4,7 +4,13 @@ import { useRouter, useParams } from "next/navigation";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { client } from "@salah-tours/helpers/client";
 import Button from "@salah-tours/components/ui/button/Button";
-import { ArrowLeft, Plus as PlusIcon, Trash as TrashIcon, Upload, X } from "lucide-react";
+import {
+  ArrowLeft,
+  Plus as PlusIcon,
+  Trash as TrashIcon,
+  Upload,
+  X,
+} from "lucide-react";
 import Link from "next/link";
 import { useFieldArray, useForm } from "react-hook-form";
 import { z } from "zod";
@@ -95,24 +101,25 @@ export default function EditTour() {
     mutationFn: async () => {
       const formData = new FormData();
       selectedImages.forEach((file) => {
-        formData.append('catalogImages', file);
+        formData.append("catalogImages", file);
       });
 
       return client(`/tours/${params.tourId}/images`, {
         method: "POST",
         data: formData,
         headers: {
-          'Content-Type': 'multipart/form-data',
+          "Content-Type": "multipart/form-data",
         },
       });
     },
   });
 
   const updateTourMutation = useMutation({
-    mutationFn: (data: TourFormData) => client(`/tours/${params.tourId}`, {
-      method: "PUT",
-      data,
-    }),
+    mutationFn: (data: TourFormData) =>
+      client(`/tours/${params.tourId}`, {
+        method: "PUT",
+        data,
+      }),
     onSuccess: async () => {
       if (selectedImages.length > 0) {
         await uploadImagesMutation.mutateAsync();
@@ -156,11 +163,16 @@ export default function EditTour() {
         <h1 className="text-2xl font-bold">Edit Tour</h1>
       </div>
 
-      <form onSubmit={handleSubmit((data) => updateTourMutation.mutate(data))}
-        className="max-w-2xl bg-white p-6 rounded-lg shadow-sm">
+      <form
+        onSubmit={handleSubmit((data) => updateTourMutation.mutate(data))}
+        className="max-w-2xl bg-white p-6 rounded-lg shadow-sm"
+      >
         <div className="space-y-6">
           <div>
-            <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+            <label
+              htmlFor="name"
+              className="block text-sm font-medium text-gray-700"
+            >
               Tour Name
             </label>
             <input
@@ -174,7 +186,10 @@ export default function EditTour() {
           </div>
 
           <div>
-            <label htmlFor="description" className="block text-sm font-medium text-gray-700">
+            <label
+              htmlFor="description"
+              className="block text-sm font-medium text-gray-700"
+            >
               Description
             </label>
             <textarea
@@ -183,13 +198,18 @@ export default function EditTour() {
               className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 focus:border-primary-500 focus:outline-none focus:ring-primary-500"
             />
             {errors.description && (
-              <p className="mt-1 text-sm text-red-600">{errors.description.message}</p>
+              <p className="mt-1 text-sm text-red-600">
+                {errors.description.message}
+              </p>
             )}
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label htmlFor="price" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="price"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Price
               </label>
               <input
@@ -200,12 +220,17 @@ export default function EditTour() {
                 className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 focus:border-primary-500 focus:outline-none focus:ring-primary-500"
               />
               {errors.price && (
-                <p className="mt-1 text-sm text-red-600">{errors.price.message}</p>
+                <p className="mt-1 text-sm text-red-600">
+                  {errors.price.message}
+                </p>
               )}
             </div>
 
             <div>
-              <label htmlFor="duration" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="duration"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Duration (hours)
               </label>
               <input
@@ -215,13 +240,18 @@ export default function EditTour() {
                 className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 focus:border-primary-500 focus:outline-none focus:ring-primary-500"
               />
               {errors.duration && (
-                <p className="mt-1 text-sm text-red-600">{errors.duration.message}</p>
+                <p className="mt-1 text-sm text-red-600">
+                  {errors.duration.message}
+                </p>
               )}
             </div>
           </div>
 
           <div>
-            <label htmlFor="categoryId" className="block text-sm font-medium text-gray-700">
+            <label
+              htmlFor="categoryId"
+              className="block text-sm font-medium text-gray-700"
+            >
               Category
             </label>
             <select
@@ -236,12 +266,16 @@ export default function EditTour() {
               ))}
             </select>
             {errors.categoryId && (
-              <p className="mt-1 text-sm text-red-600">{errors.categoryId.message}</p>
+              <p className="mt-1 text-sm text-red-600">
+                {errors.categoryId.message}
+              </p>
             )}
           </div>
 
           <div className="mt-4">
-            <label className="block text-sm font-medium text-gray-700">Catalog Images</label>
+            <label className="block text-sm font-medium text-gray-700">
+              Catalog Images
+            </label>
             <div className="mt-1 flex items-center gap-4">
               <input
                 type="file"
@@ -264,7 +298,7 @@ export default function EditTour() {
               {previewUrls.map((url, index) => (
                 <div key={index} className="relative">
                   <img
-                    src={url.startsWith('blob:') ? url : url}
+                    src={url.startsWith("blob:") ? url : url}
                     alt={`Preview ${index + 1}`}
                     className="w-full h-32 object-cover rounded-lg"
                   />
@@ -287,7 +321,9 @@ export default function EditTour() {
                 type="button"
                 color="primary"
                 className="flex items-center gap-2"
-                onClick={() => append({ day: fields.length + 1, title: "", description: "" })}
+                onClick={() =>
+                  append({ day: fields.length + 1, title: "", description: "" })
+                }
               >
                 <PlusIcon className="h-4 w-4" />
                 Add Day
@@ -361,13 +397,19 @@ export default function EditTour() {
             <Button
               type="submit"
               color="primary"
-              disabled={isSubmitting || updateTourMutation.isPending || uploadImagesMutation.isPending}
+              disabled={
+                isSubmitting ||
+                updateTourMutation.isPending ||
+                uploadImagesMutation.isPending
+              }
             >
-              {updateTourMutation.isPending || uploadImagesMutation.isPending ? "Saving..." : "Save Changes"}
+              {updateTourMutation.isPending || uploadImagesMutation.isPending
+                ? "Saving..."
+                : "Save Changes"}
             </Button>
           </div>
         </div>
       </form>
     </div>
   );
-} 
+}

@@ -13,9 +13,12 @@ export const AppDataSource = new DataSource({
   username: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
-  ssl: process.env.NODE_ENV === "production" ? {
-    rejectUnauthorized: false,
-  } : false,
+  ssl:
+    process.env.NODE_ENV === "production"
+      ? {
+          rejectUnauthorized: false,
+        }
+      : false,
   synchronize: true,
   logging: process.env.NODE_ENV === "development",
   entities: [Tour, TourDay, Category, Info, Stats],
@@ -37,4 +40,4 @@ export async function initializeDB() {
     }
   }
   return AppDataSource;
-} 
+}

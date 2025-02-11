@@ -6,7 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { client } from "@salah-tours/helpers/client";
 import Button from "@salah-tours/components/ui/button/Button";
-import { useRouter, useParams  } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 
@@ -15,7 +15,10 @@ const bookingFormSchema = z.object({
   lastName: z.string().min(1, "Last name is required"),
   email: z.string().email("Invalid email address"),
   phone: z.string().min(8, "Phone number must be at least 8 characters"),
-  numberOfPeople: z.number().min(1, "At least 1 person is required").max(20, "Maximum 20 people allowed"),
+  numberOfPeople: z
+    .number()
+    .min(1, "At least 1 person is required")
+    .max(20, "Maximum 20 people allowed"),
   date: z.string().min(1, "Date is required"),
   specialRequirements: z.string().optional(),
 });
@@ -31,7 +34,7 @@ interface Tour {
 
 export default function Booking() {
   const router = useRouter();
-          const params = useParams();
+  const params = useParams();
 
   const { data: tour } = useQuery<Tour>({
     queryKey: ["tours", params.tourId],
@@ -101,59 +104,79 @@ export default function Booking() {
         </div>
       )}
 
-      <form onSubmit={handleSubmit((data) => createBookingMutation.mutate(data))} 
-            className="bg-white p-6 rounded-lg shadow-sm">
+      <form
+        onSubmit={handleSubmit((data) => createBookingMutation.mutate(data))}
+        className="bg-white p-6 rounded-lg shadow-sm"
+      >
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
           <div>
-            <label className="block text-sm font-medium text-gray-700">First Name</label>
+            <label className="block text-sm font-medium text-gray-700">
+              First Name
+            </label>
             <input
               type="text"
               {...register("firstName")}
               className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 focus:border-primary-500 focus:outline-none focus:ring-primary-500"
             />
             {errors.firstName && (
-              <p className="mt-1 text-sm text-red-600">{errors.firstName.message}</p>
+              <p className="mt-1 text-sm text-red-600">
+                {errors.firstName.message}
+              </p>
             )}
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700">Last Name</label>
+            <label className="block text-sm font-medium text-gray-700">
+              Last Name
+            </label>
             <input
               type="text"
               {...register("lastName")}
               className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 focus:border-primary-500 focus:outline-none focus:ring-primary-500"
             />
             {errors.lastName && (
-              <p className="mt-1 text-sm text-red-600">{errors.lastName.message}</p>
+              <p className="mt-1 text-sm text-red-600">
+                {errors.lastName.message}
+              </p>
             )}
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700">Email</label>
+            <label className="block text-sm font-medium text-gray-700">
+              Email
+            </label>
             <input
               type="email"
               {...register("email")}
               className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 focus:border-primary-500 focus:outline-none focus:ring-primary-500"
             />
             {errors.email && (
-              <p className="mt-1 text-sm text-red-600">{errors.email.message}</p>
+              <p className="mt-1 text-sm text-red-600">
+                {errors.email.message}
+              </p>
             )}
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700">Phone</label>
+            <label className="block text-sm font-medium text-gray-700">
+              Phone
+            </label>
             <input
               type="tel"
               {...register("phone")}
               className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 focus:border-primary-500 focus:outline-none focus:ring-primary-500"
             />
             {errors.phone && (
-              <p className="mt-1 text-sm text-red-600">{errors.phone.message}</p>
+              <p className="mt-1 text-sm text-red-600">
+                {errors.phone.message}
+              </p>
             )}
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700">Number of People</label>
+            <label className="block text-sm font-medium text-gray-700">
+              Number of People
+            </label>
             <input
               type="number"
               min="1"
@@ -162,12 +185,16 @@ export default function Booking() {
               className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 focus:border-primary-500 focus:outline-none focus:ring-primary-500"
             />
             {errors.numberOfPeople && (
-              <p className="mt-1 text-sm text-red-600">{errors.numberOfPeople.message}</p>
+              <p className="mt-1 text-sm text-red-600">
+                {errors.numberOfPeople.message}
+              </p>
             )}
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700">Tour Date</label>
+            <label className="block text-sm font-medium text-gray-700">
+              Tour Date
+            </label>
             <input
               type="date"
               min={minDate}
@@ -190,7 +217,9 @@ export default function Booking() {
               className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 focus:border-primary-500 focus:outline-none focus:ring-primary-500"
             />
             {errors.specialRequirements && (
-              <p className="mt-1 text-sm text-red-600">{errors.specialRequirements.message}</p>
+              <p className="mt-1 text-sm text-red-600">
+                {errors.specialRequirements.message}
+              </p>
             )}
           </div>
         </div>

@@ -13,11 +13,11 @@ export async function GET() {
         parentCategory: true,
       },
       where: {
-        parentCategoryId: Not(IsNull()) // Using Not and IsNull operators for type safety
+        parentCategoryId: Not(IsNull()), // Using Not and IsNull operators for type safety
       },
       order: {
-        name: "ASC"
-      }
+        name: "ASC",
+      },
     });
 
     return NextResponse.json(categories);
@@ -25,7 +25,7 @@ export async function GET() {
     console.error("Error fetching sub categories:", error);
     return NextResponse.json(
       { error: "Failed to fetch sub categories" },
-      { status: 500 }
+      { status: 500 },
     );
   }
-} 
+}

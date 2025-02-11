@@ -31,7 +31,7 @@ export default function TextField(props: TextFieldProps) {
             {
               "!ring-red-500 !focus:ring-red-700 placeholder:text-red-500":
                 !!props.error,
-            }
+            },
           )}
           {...props.inputProps}
         />

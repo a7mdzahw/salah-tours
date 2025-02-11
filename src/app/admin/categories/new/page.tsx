@@ -38,23 +38,24 @@ export default function NewCategory() {
       if (!selectedImage) return;
 
       const formData = new FormData();
-      formData.append('image', selectedImage);
+      formData.append("image", selectedImage);
 
       return client(`/categories/${categoryId}/image`, {
         method: "POST",
         data: formData,
         headers: {
-          'Content-Type': 'multipart/form-data',
+          "Content-Type": "multipart/form-data",
         },
       });
     },
   });
 
   const createCategoryMutation = useMutation({
-    mutationFn: (data: CategoryFormData) => client<Category>("/categories", {
-      method: "POST",
-      data,
-    }),
+    mutationFn: (data: CategoryFormData) =>
+      client<Category>("/categories", {
+        method: "POST",
+        data,
+      }),
     onSuccess: async (response) => {
       if (selectedImage) {
         await uploadImageMutation.mutateAsync(response.id);
@@ -96,11 +97,16 @@ export default function NewCategory() {
         <h1 className="text-2xl font-bold">Create New Category</h1>
       </div>
 
-      <form onSubmit={handleSubmit((data) => createCategoryMutation.mutate(data))} 
-        className="max-w-2xl bg-white p-6 rounded-lg shadow-sm">
+      <form
+        onSubmit={handleSubmit((data) => createCategoryMutation.mutate(data))}
+        className="max-w-2xl bg-white p-6 rounded-lg shadow-sm"
+      >
         <div className="space-y-6">
           <div>
-            <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+            <label
+              htmlFor="name"
+              className="block text-sm font-medium text-gray-700"
+            >
               Category Name
             </label>
             <input
@@ -114,7 +120,10 @@ export default function NewCategory() {
           </div>
 
           <div>
-            <label htmlFor="description" className="block text-sm font-medium text-gray-700">
+            <label
+              htmlFor="description"
+              className="block text-sm font-medium text-gray-700"
+            >
               Description
             </label>
             <textarea
@@ -123,12 +132,17 @@ export default function NewCategory() {
               className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 focus:border-primary-500 focus:outline-none focus:ring-primary-500"
             />
             {errors.description && (
-              <p className="mt-1 text-sm text-red-600">{errors.description.message}</p>
+              <p className="mt-1 text-sm text-red-600">
+                {errors.description.message}
+              </p>
             )}
           </div>
 
           <div>
-            <label htmlFor="parentCategoryId" className="block text-sm font-medium text-gray-700">
+            <label
+              htmlFor="parentCategoryId"
+              className="block text-sm font-medium text-gray-700"
+            >
               Parent Category (Optional)
             </label>
             <select
@@ -143,7 +157,9 @@ export default function NewCategory() {
               ))}
             </select>
             {errors.parentCategoryId && (
-              <p className="mt-1 text-sm text-red-600">{errors.parentCategoryId.message}</p>
+              <p className="mt-1 text-sm text-red-600">
+                {errors.parentCategoryId.message}
+              </p>
             )}
           </div>
 
@@ -193,7 +209,10 @@ export default function NewCategory() {
             <Button
               type="submit"
               color="primary"
-              disabled={createCategoryMutation.isPending || uploadImageMutation.isPending}
+              disabled={
+                createCategoryMutation.isPending ||
+                uploadImageMutation.isPending
+              }
             >
               {createCategoryMutation.isPending || uploadImageMutation.isPending
                 ? "Creating..."
@@ -204,4 +223,4 @@ export default function NewCategory() {
       </form>
     </div>
   );
-} 
+}

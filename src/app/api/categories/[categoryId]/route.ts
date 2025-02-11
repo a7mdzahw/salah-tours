@@ -4,7 +4,7 @@ import { Category } from "@entities/Category";
 
 export async function GET(
   request: Request,
-  { params }: { params: Promise<{ categoryId: string }> }
+  { params }: { params: Promise<{ categoryId: string }> },
 ) {
   try {
     const categoryId = (await params).categoryId;
@@ -22,7 +22,7 @@ export async function GET(
     if (!category) {
       return NextResponse.json(
         { error: "Category not found" },
-        { status: 404 }
+        { status: 404 },
       );
     }
 
@@ -31,14 +31,14 @@ export async function GET(
     console.error("Error fetching category:", error);
     return NextResponse.json(
       { error: "Failed to fetch category" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
 
 export async function PUT(
   request: Request,
-  { params }: { params: Promise<{ categoryId: string }> }
+  { params }: { params: Promise<{ categoryId: string }> },
 ) {
   try {
     await initializeDB();
@@ -53,7 +53,7 @@ export async function PUT(
     if (!category) {
       return NextResponse.json(
         { error: "Category not found" },
-        { status: 404 }
+        { status: 404 },
       );
     }
 
@@ -68,14 +68,14 @@ export async function PUT(
     console.error("Error updating category:", error);
     return NextResponse.json(
       { error: "Failed to update category" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
 
 export async function DELETE(
   request: Request,
-  { params }: { params: Promise<{ categoryId: string }> }
+  { params }: { params: Promise<{ categoryId: string }> },
 ) {
   try {
     await initializeDB();
@@ -84,24 +84,30 @@ export async function DELETE(
 
     const category = await categoryRepository.findOne({
       where: { id: categoryId },
-      relations: ['subCategories', 'tours']
+      relations: ["subCategories", "tours"],
     });
 
     if (!category) {
-      return NextResponse.json({ error: 'Category not found' }, { status: 404 });
+      return NextResponse.json(
+        { error: "Category not found" },
+        { status: 404 },
+      );
     }
 
     if (category.tours?.length > 0) {
       return NextResponse.json(
-        { error: 'Cannot delete category with associated tours' },
-        { status: 400 }
+        { error: "Cannot delete category with associated tours" },
+        { status: 400 },
       );
     }
 
     await categoryRepository.remove(category);
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error('Error deleting category:', error);
-    return NextResponse.json({ error: 'Failed to delete category' }, { status: 500 });
+    console.error("Error deleting category:", error);
+    return NextResponse.json(
+      { error: "Failed to delete category" },
+      { status: 500 },
+    );
   }
 }

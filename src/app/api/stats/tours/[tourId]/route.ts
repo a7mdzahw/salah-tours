@@ -3,19 +3,19 @@ import { AppDataSource, initializeDB } from "@lib/db";
 
 export async function GET(
   request: Request,
-  { params }: { params: Promise<{ tourId: string }> }
+  { params }: { params: Promise<{ tourId: string }> },
 ) {
   try {
     await initializeDB();
     const tourId = (await params).tourId;
-    
+
     // Get tour booking statistics
     const tourStats = await AppDataSource.createQueryBuilder()
       .select([
         "tour.name",
         "COUNT(DISTINCT booking.id) as totalBookings",
         "SUM(booking.number_of_people) as totalTravelers",
-        "AVG(booking.number_of_people) as avgGroupSize"
+        "AVG(booking.number_of_people) as avgGroupSize",
       ])
       .from("tours", "tour")
       .leftJoin("bookings", "booking", "booking.tour_id = tour.id")
@@ -28,12 +28,12 @@ export async function GET(
       .select([
         "DATE_TRUNC('month', booking.created_at) as month",
         "COUNT(*) as bookingCount",
-        "SUM(booking.number_of_people) as travelerCount"
+        "SUM(booking.number_of_people) as travelerCount",
       ])
       .from("bookings", "booking")
       .where("booking.tour_id = :tourId", { tourId: parseInt(tourId) })
       .andWhere("booking.created_at >= :startDate", {
-        startDate: new Date(new Date().setMonth(new Date().getMonth() - 6))
+        startDate: new Date(new Date().setMonth(new Date().getMonth() - 6)),
       })
       .groupBy("month")
       .orderBy("month", "ASC")
@@ -44,7 +44,7 @@ export async function GET(
       .select([
         "booking.date",
         "COUNT(*) as bookingCount",
-        "SUM(booking.number_of_people) as travelerCount"
+        "SUM(booking.number_of_people) as travelerCount",
       ])
       .from("bookings", "booking")
       .where("booking.tour_id = :tourId", { tourId: parseInt(tourId) })
@@ -57,10 +57,13 @@ export async function GET(
     return NextResponse.json({
       tourStats,
       monthlyTrends,
-      upcomingBookings
+      upcomingBookings,
     });
   } catch (error) {
-    console.error('Error fetching tour stats:', error);
-    return NextResponse.json({ error: 'Failed to fetch tour stats' }, { status: 500 });
+    console.error("Error fetching tour stats:", error);
+    return NextResponse.json(
+      { error: "Failed to fetch tour stats" },
+      { status: 500 },
+    );
   }
-} 
+}

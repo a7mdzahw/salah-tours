@@ -13,4 +13,4 @@ export class Info {
 
   @Column({ name: "bannerUrl", type: "varchar", nullable: true })
   bannerUrl: string;
-} 
+}

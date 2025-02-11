@@ -8,7 +8,6 @@ import { useParams } from "next/navigation";
 import { Category } from "@entities/Category";
 import TourCard from "@salah-tours/components/tour-card/TourCard";
 
-
 export default function CategoryDetails() {
   const { categoryId } = useParams();
 
