@@ -13,4 +13,7 @@ export class Info {
 
   @Column({ name: "bannerUrl", type: "varchar", nullable: true })
   bannerUrl: string;
+
+  @Column({ type: "varchar", nullable: true })
+  heroUrl: string;
 }

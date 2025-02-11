@@ -8,9 +8,14 @@ import Link from "next/link";
 import { Tour } from "@entities/Tour";
 import { toast, Toaster } from "react-hot-toast";
 import { ConfirmDialog } from "../components/ConfirmDialog";
+import QueryLoader from "@salah-tours/components/ui/loader/QueryLoader";
 
 export default function ToursManagement() {
-  const { data: tours } = useQuery<Tour[]>({
+  const {
+    data: tours,
+    isLoading,
+    error,
+  } = useQuery<Tour[]>({
     queryKey: ["tours"],
     queryFn: () => client<Tour[]>("/tours"),
   });
@@ -45,12 +50,12 @@ export default function ToursManagement() {
         duration: Infinity,
         position: "top-center",
         className: "!max-w-fit",
-      },
+      }
     );
   };
 
   return (
-    <div>
+    <QueryLoader isLoading={isLoading} error={error}>
       <Toaster />
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-2xl font-bold">Tours Management</h1>
@@ -106,6 +111,6 @@ export default function ToursManagement() {
           </tbody>
         </table>
       </div>
-    </div>
+    </QueryLoader>
   );
 }

@@ -21,7 +21,7 @@ export async function POST(
     }
 
     // Handle file upload
-    const { file } = await uploadToHippo(request, "image");
+    const { file } = await uploadToHippo(await request.formData(), "image");
 
     if (!file) {
       return NextResponse.json({ error: "No file uploaded" }, { status: 400 });

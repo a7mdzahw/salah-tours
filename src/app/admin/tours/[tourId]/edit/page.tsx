@@ -18,7 +18,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useState, useEffect } from "react";
 import { Tour } from "@entities/Tour";
 import { Category } from "@entities/Category";
-
+import QueryLoader from "@salah-tours/components/ui/loader/QueryLoader";
 const daySchema = z.object({
   day: z.number().min(1),
   title: z.string().min(1, "Title is required"),
@@ -42,7 +42,7 @@ export default function EditTour() {
   const [selectedImages, setSelectedImages] = useState<File[]>([]);
   const [previewUrls, setPreviewUrls] = useState<string[]>([]);
 
-  const { data: tour } = useQuery<Tour>({
+  const { data: tour, isLoading, error } = useQuery<Tour>({
     queryKey: ["tours", params.tourId],
     queryFn: () => client<Tour>(`/tours/${params.tourId}`),
   });
@@ -144,12 +144,9 @@ export default function EditTour() {
     });
   };
 
-  if (!tour) {
-    return <div>Loading...</div>;
-  }
 
   return (
-    <div>
+    <QueryLoader isLoading={isLoading} error={error}>
       <div className="flex items-center gap-4 mb-8">
         <Link href="/admin/tours">
           <Button color="ghost" className="p-2">
@@ -406,6 +403,6 @@ export default function EditTour() {
           </div>
         </div>
       </form>
-    </div>
+    </QueryLoader>
   );
 }

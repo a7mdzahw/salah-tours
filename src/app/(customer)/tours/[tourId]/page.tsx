@@ -7,6 +7,7 @@ import { useParams, useRouter } from "next/navigation";
 import { client } from "@salah-tours/helpers/client";
 import { useQuery } from "@tanstack/react-query";
 import { Tour } from "@entities/Tour";
+import QueryLoader from "@salah-tours/components/ui/loader/QueryLoader";
 
 const TourDetails = () => {
   const { tourId } = useParams();
@@ -21,16 +22,8 @@ const TourDetails = () => {
     queryFn: () => client(`/tours/${tourId}`),
   });
 
-  if (isLoading) {
-    return <p>Loading...</p>;
-  }
-
-  if (isError) {
-    return <p>Error fetching tour</p>;
-  }
-
   return (
-    <div>
+    <QueryLoader isLoading={isLoading} error={isError}>
       <section
         className="py-24 text-center relative"
         style={{
@@ -78,7 +71,7 @@ const TourDetails = () => {
           Book Now
         </Button>
       </section>
-    </div>
+    </QueryLoader>
   );
 };
 

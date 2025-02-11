@@ -10,10 +10,18 @@ import Logo from "@salah-tours/assets/images/logo.png";
 import clsx from "clsx";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
+import { Info } from "@entities/Info";
+import { client } from "@salah-tours/helpers/client";
+import { useQuery } from "@tanstack/react-query";
 
 const Header = () => {
   const path = usePathname();
   const { fixed, placeholderRef } = useNavbarPosition();
+
+  const { data: info } = useQuery<Info>({
+    queryKey: ["info"],
+    queryFn: () => client("/info"),
+  });
 
   return (
     <header className="w-full z-50">
@@ -40,11 +48,13 @@ const Header = () => {
       </TopBar>
 
       {path === "/" && (
-        <MiddleHero className="bg-primary-500 h-24 flex items-center p-8 md:p-52 relative justify-center">
+        <MiddleHero className="bg-primary-500 h-24 flex items-center  relative justify-center">
           <div className="bg-primary-800 absolute inset-0 opacity-30" />
-          <h1 className="text-primary-200 shadow-2xl !text-[100px] !font-bold z-20 pb-24">
-            Salah Tours
-          </h1>
+          <img
+            src={info?.heroUrl}
+            alt="hero"
+            className="w-full h-full object-cover"
+          />
         </MiddleHero>
       )}
 

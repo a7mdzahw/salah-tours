@@ -7,6 +7,7 @@ import { useQuery } from "@tanstack/react-query";
 import { FloatingWhatsApp } from "react-floating-whatsapp";
 import Categories from "./categories/page";
 import { Tour } from "@entities/Tour";
+import QueryLoader from "@salah-tours/components/ui/loader/QueryLoader";
 
 export default function Home() {
   const {
@@ -18,16 +19,8 @@ export default function Home() {
     queryFn: () => client("/tours"),
   });
 
-  if (isLoading) {
-    return <p>Loading...</p>;
-  }
-
-  if (isError) {
-    return <p>Error fetching tours</p>;
-  }
-
   return (
-    <>
+    <QueryLoader isLoading={isLoading} error={isError}>
       <FloatingWhatsApp phoneNumber="123456789" accountName="Salah Tours" />
       <InfoSection />
       <Categories />
@@ -50,6 +43,6 @@ export default function Home() {
           ))}
         </div>
       </section>
-    </>
+    </QueryLoader>
   );
 }

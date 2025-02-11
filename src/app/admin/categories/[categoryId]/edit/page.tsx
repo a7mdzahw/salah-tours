@@ -11,6 +11,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState, useEffect } from "react";
 import { Category } from "@entities/Category";
+import QueryLoader from "@salah-tours/components/ui/loader/QueryLoader";
 
 const categoryFormSchema = z.object({
   name: z.string().min(1, "Category name is required"),
@@ -26,7 +27,7 @@ export default function EditCategory() {
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string>("");
 
-  const { data: category } = useQuery<Category>({
+  const { data: category, isLoading, error } = useQuery<Category>({
     queryKey: ["categories", params.categoryId],
     queryFn: () => client<Category>(`/categories/${params.categoryId}`),
   });
@@ -109,137 +110,143 @@ export default function EditCategory() {
   };
 
   return (
-    <div>
-      <div className="mb-8 flex items-center gap-4">
-        <Link href="/admin/categories">
-          <Button color="ghost" className="p-2">
-            <ArrowLeft className="h-4 w-4" />
-          </Button>
-        </Link>
-        <h1 className="text-2xl font-bold">Edit Category</h1>
-      </div>
+    <QueryLoader 
+      isLoading={isLoading} 
+      error={error}
+      loadingText="Loading category..."
+    >
+      <div>
+        <div className="mb-8 flex items-center gap-4">
+          <Link href="/admin/categories">
+            <Button color="ghost" className="p-2">
+              <ArrowLeft className="h-4 w-4" />
+            </Button>
+          </Link>
+          <h1 className="text-2xl font-bold">Edit Category</h1>
+        </div>
 
-      <form onSubmit={handleSubmit(onSubmit)} className="max-w-2xl">
-        <div className="space-y-6 bg-white p-6 rounded-lg shadow-sm">
-          <div>
-            <label
-              htmlFor="name"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Name
-            </label>
-            <input
-              {...register("name")}
-              type="text"
-              className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 focus:border-primary-500 focus:outline-none focus:ring-primary-500"
-            />
-            {errors.name && (
-              <p className="mt-1 text-sm text-red-600">{errors.name.message}</p>
-            )}
-          </div>
-
-          <div>
-            <label
-              htmlFor="description"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Description
-            </label>
-            <textarea
-              {...register("description")}
-              rows={3}
-              className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 focus:border-primary-500 focus:outline-none focus:ring-primary-500"
-            />
-            {errors.description && (
-              <p className="mt-1 text-sm text-red-600">
-                {errors.description.message}
-              </p>
-            )}
-          </div>
-
-          <div>
-            <label
-              htmlFor="parentCategoryId"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Parent Category
-            </label>
-            <select
-              {...register("parentCategoryId")}
-              className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 focus:border-primary-500 focus:outline-none focus:ring-primary-500"
-            >
-              <option value="">None (Create as main category)</option>
-              {mainCategories?.map((category) => (
-                <option key={category.id} value={category.id}>
-                  {category.name}
-                </option>
-              ))}
-            </select>
-            {errors.parentCategoryId && (
-              <p className="mt-1 text-sm text-red-600">
-                {errors.parentCategoryId.message}
-              </p>
-            )}
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Category Image
-            </label>
-            <div className="mt-2 space-y-4">
-              {previewUrl && (
-                <div className="relative w-32 h-32">
-                  <img
-                    src={previewUrl}
-                    alt="Preview"
-                    className="w-full h-full object-cover rounded-lg"
-                  />
-                  <button
-                    type="button"
-                    onClick={removeImage}
-                    className="absolute top-2 right-2 p-1 bg-red-500 rounded-full text-white"
-                  >
-                    <X className="h-4 w-4" />
-                  </button>
-                </div>
+        <form onSubmit={handleSubmit(onSubmit)} className="max-w-2xl">
+          <div className="space-y-6 bg-white p-6 rounded-lg shadow-sm">
+            <div>
+              <label
+                htmlFor="name"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Name
+              </label>
+              <input
+                {...register("name")}
+                type="text"
+                className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 focus:border-primary-500 focus:outline-none focus:ring-primary-500"
+              />
+              {errors.name && (
+                <p className="mt-1 text-sm text-red-600">{errors.name.message}</p>
               )}
+            </div>
 
-              <div className="flex items-center justify-center w-full">
-                <label className="w-full flex flex-col items-center px-4 py-6 bg-white rounded-lg border-2 border-dashed border-gray-300 cursor-pointer hover:border-primary-500">
-                  <Upload className="h-8 w-8 text-gray-400" />
-                  <span className="mt-2 text-sm text-gray-500">
-                    Click to upload image
-                  </span>
-                  <input
-                    type="file"
-                    className="hidden"
-                    accept="image/*"
-                    onChange={handleImageChange}
-                  />
-                </label>
+            <div>
+              <label
+                htmlFor="description"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Description
+              </label>
+              <textarea
+                {...register("description")}
+                rows={3}
+                className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 focus:border-primary-500 focus:outline-none focus:ring-primary-500"
+              />
+              {errors.description && (
+                <p className="mt-1 text-sm text-red-600">
+                  {errors.description.message}
+                </p>
+              )}
+            </div>
+
+            <div>
+              <label
+                htmlFor="parentCategoryId"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Parent Category
+              </label>
+              <select
+                {...register("parentCategoryId")}
+                className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 focus:border-primary-500 focus:outline-none focus:ring-primary-500"
+              >
+                <option value="">None (Create as main category)</option>
+                {mainCategories?.map((category) => (
+                  <option key={category.id} value={category.id}>
+                    {category.name}
+                  </option>
+                ))}
+              </select>
+              {errors.parentCategoryId && (
+                <p className="mt-1 text-sm text-red-600">
+                  {errors.parentCategoryId.message}
+                </p>
+              )}
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                Category Image
+              </label>
+              <div className="mt-2 space-y-4">
+                {previewUrl && (
+                  <div className="relative w-32 h-32">
+                    <img
+                      src={previewUrl}
+                      alt="Preview"
+                      className="w-full h-full object-cover rounded-lg"
+                    />
+                    <button
+                      type="button"
+                      onClick={removeImage}
+                      className="absolute top-2 right-2 p-1 bg-red-500 rounded-full text-white"
+                    >
+                      <X className="h-4 w-4" />
+                    </button>
+                  </div>
+                )}
+
+                <div className="flex items-center justify-center w-full">
+                  <label className="w-full flex flex-col items-center px-4 py-6 bg-white rounded-lg border-2 border-dashed border-gray-300 cursor-pointer hover:border-primary-500">
+                    <Upload className="h-8 w-8 text-gray-400" />
+                    <span className="mt-2 text-sm text-gray-500">
+                      Click to upload image
+                    </span>
+                    <input
+                      type="file"
+                      className="hidden"
+                      accept="image/*"
+                      onChange={handleImageChange}
+                    />
+                  </label>
+                </div>
               </div>
             </div>
-          </div>
 
-          <div className="flex justify-end gap-4">
-            <Link href="/admin/categories">
-              <Button color="ghost">Cancel</Button>
-            </Link>
-            <Button
-              type="submit"
-              color="primary"
-              disabled={
-                updateCategoryMutation.isPending ||
-                uploadImageMutation.isPending
-              }
-            >
-              {updateCategoryMutation.isPending || uploadImageMutation.isPending
-                ? "Saving..."
-                : "Save Changes"}
-            </Button>
+            <div className="flex justify-end gap-4">
+              <Link href="/admin/categories">
+                <Button color="ghost">Cancel</Button>
+              </Link>
+              <Button
+                type="submit"
+                color="primary"
+                disabled={
+                  updateCategoryMutation.isPending ||
+                  uploadImageMutation.isPending
+                }
+              >
+                {updateCategoryMutation.isPending || uploadImageMutation.isPending
+                  ? "Saving..."
+                  : "Save Changes"}
+              </Button>
+            </div>
           </div>
-        </div>
-      </form>
-    </div>
+        </form>
+      </div>
+    </QueryLoader>
   );
 }

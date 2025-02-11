@@ -2,6 +2,7 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { client } from "@salah-tours/helpers/client";
+import QueryLoader from "@salah-tours/components/ui/loader/QueryLoader";
 
 interface Stats {
   totalTours: number;
@@ -10,13 +11,17 @@ interface Stats {
 }
 
 export default function AdminDashboard() {
-  const { data: stats } = useQuery<Stats>({
+  const {
+    data: stats,
+    isLoading,
+    error,
+  } = useQuery<Stats>({
     queryKey: ["admin", "stats"],
     queryFn: () => client("/stats"),
   });
 
   return (
-    <div>
+    <QueryLoader isLoading={isLoading} error={error}>
       <h1 className="text-2xl font-bold mb-8">Dashboard Overview</h1>
 
       <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
@@ -24,7 +29,7 @@ export default function AdminDashboard() {
         <StatCard title="Main Categories" value={stats?.mainCategories || 0} />
         <StatCard title="Sub Categories" value={stats?.subCategories || 0} />
       </div>
-    </div>
+    </QueryLoader>
   );
 }
 

@@ -10,29 +10,24 @@ import { Category } from "@entities/Category";
 import { toast, Toaster } from "react-hot-toast";
 import { ConfirmDialog } from "../components/ConfirmDialog";
 import { AxiosError } from "axios";
+import QueryLoader from "@salah-tours/components/ui/loader/QueryLoader";
+
 export default function CategoriesManagement() {
   const queryClient = useQueryClient();
 
-  const { data: mainCategories } = useQuery<Category[]>({
+  const {
+    data: mainCategories,
+    isLoading,
+    error,
+  } = useQuery<Category[]>({
     queryKey: ["categories", "main"],
     queryFn: () => client<Category[]>("/categories/main"),
   });
 
-  const { data: subCategories } = useQuery<Category[]>({
-    queryKey: ["categories", "sub"],
-    queryFn: () => client<Category[]>("/categories/sub"),
-  });
-
   // Add state for tracking expanded categories
   const [expandedCategories, setExpandedCategories] = useState<Set<string>>(
-    new Set(),
+    new Set()
   );
-
-  const getSubcategoriesForParent = (parentId: string) => {
-    return (
-      subCategories?.filter((cat) => cat.parentCategoryId === parentId) || []
-    );
-  };
 
   // Add toggle function
   const toggleCategory = (categoryId: string) => {
@@ -77,12 +72,12 @@ export default function CategoriesManagement() {
         duration: Infinity,
         position: "top-center",
         className: "!max-w-fit",
-      },
+      }
     );
   };
 
   return (
-    <div>
+    <QueryLoader isLoading={isLoading} error={error}>
       <Toaster />
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-2xl font-bold">Categories Management</h1>
@@ -152,108 +147,41 @@ export default function CategoriesManagement() {
                   </tr>
                   {/* Only show sub-categories if category is expanded */}
                   {expandedCategories.has(category.id) &&
-                    getSubcategoriesForParent(category.id).map(
-                      (subCategory) => (
-                        <tr key={subCategory.id} className="bg-gray-50">
-                          <td className="px-6 py-4 text-sm text-gray-900 pl-12">
-                            {subCategory.name}
-                          </td>
-                          <td className="px-6 py-4 text-sm text-gray-500">
-                            {subCategory.description}
-                          </td>
-                          <td className="px-6 py-4 text-right text-sm">
-                            <div className="flex justify-end gap-2">
-                              <Link
-                                href={`/admin/categories/${subCategory.id}/edit`}
-                              >
-                                <Button color="primary" className="p-2">
-                                  <Edit className="h-4 w-4" />
-                                </Button>
-                              </Link>
-                              <Button
-                                color="primary"
-                                className="p-2"
-                                onClick={() => handleDelete(subCategory)}
-                                disabled={deleteCategoryMutation.isPending}
-                              >
-                                <Trash className="h-4 w-4" />
+                    category.subCategories?.map((subCategory) => (
+                      <tr key={subCategory.id} className="bg-gray-50">
+                        <td className="px-6 py-4 text-sm text-gray-900 pl-12">
+                          {subCategory.name}
+                        </td>
+                        <td className="px-6 py-4 text-sm text-gray-500">
+                          {subCategory.description}
+                        </td>
+                        <td className="px-6 py-4 text-right text-sm">
+                          <div className="flex justify-end gap-2">
+                            <Link
+                              href={`/admin/categories/${subCategory.id}/edit`}
+                            >
+                              <Button color="primary" className="p-2">
+                                <Edit className="h-4 w-4" />
                               </Button>
-                            </div>
-                          </td>
-                        </tr>
-                      ),
-                    )}
+                            </Link>
+                            <Button
+                              color="primary"
+                              className="p-2"
+                              onClick={() => handleDelete(subCategory)}
+                              disabled={deleteCategoryMutation.isPending}
+                            >
+                              <Trash className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
                 </Fragment>
               ))}
             </tbody>
           </table>
         </div>
-
-        {/* Uncategorized Sub-categories */}
-        {subCategories?.some(
-          (cat) =>
-            !mainCategories?.find((main) => main.id === cat.parentCategoryId),
-        ) && (
-          <div className="bg-white shadow-sm rounded-lg overflow-hidden">
-            <div className="px-6 py-4 border-b border-gray-200">
-              <h2 className="text-lg font-semibold text-gray-900">
-                Uncategorized Sub-categories
-              </h2>
-            </div>
-            <table className="min-w-full divide-y divide-gray-300">
-              <thead>
-                <tr>
-                  <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">
-                    Name
-                  </th>
-                  <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">
-                    Description
-                  </th>
-                  <th className="px-6 py-3 text-right text-sm font-semibold text-gray-900">
-                    Actions
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-200">
-                {subCategories
-                  ?.filter(
-                    (cat) =>
-                      !mainCategories?.find(
-                        (main) => main.id === cat.parentCategoryId,
-                      ),
-                  )
-                  .map((category) => (
-                    <tr key={category.id}>
-                      <td className="px-6 py-4 text-sm text-gray-900">
-                        {category.name}
-                      </td>
-                      <td className="px-6 py-4 text-sm text-gray-500">
-                        {category.description}
-                      </td>
-                      <td className="px-6 py-4 text-right text-sm">
-                        <div className="flex justify-end gap-2">
-                          <Link href={`/admin/categories/${category.id}/edit`}>
-                            <Button color="primary" className="p-2">
-                              <Edit className="h-4 w-4" />
-                            </Button>
-                          </Link>
-                          <Button
-                            color="primary"
-                            className="p-2"
-                            onClick={() => handleDelete(category)}
-                            disabled={deleteCategoryMutation.isPending}
-                          >
-                            <Trash className="h-4 w-4" />
-                          </Button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-              </tbody>
-            </table>
-          </div>
-        )}
       </div>
-    </div>
+    </QueryLoader>
   );
 }

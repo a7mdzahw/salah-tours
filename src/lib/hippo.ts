@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 
 interface UploadedFile {
   filename: string;
@@ -8,12 +8,11 @@ interface UploadedFile {
 }
 
 export async function uploadToHippo(
-  request: NextRequest,
+  formData: FormData,
   fieldName: string,
   maxCount = 1
 ) {
   try {
-    const formData = await request.formData();
     const files = formData.getAll(fieldName);
 
     if (!files.length) {
