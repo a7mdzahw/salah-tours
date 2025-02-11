@@ -12,7 +12,7 @@ export async function POST(
     const tourId = (await params).tourId;
     const tourRepository = AppDataSource.getRepository(Tour);
 
-    const tour = await tourRepository.findOneBy({ id: parseInt(tourId) });
+    const tour = await tourRepository.findOneBy({ id: tourId });
     if (!tour) {
       return NextResponse.json({ error: "Tour not found" }, { status: 404 });
     }

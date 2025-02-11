@@ -18,7 +18,7 @@ export default function ToursManagement() {
   const queryClient = useQueryClient();
 
   const deleteTourMutation = useMutation({
-    mutationFn: (tourId: number) =>
+    mutationFn: (tourId: string) =>
       client(`/tours/${tourId}`, {
         method: "DELETE",
       }),

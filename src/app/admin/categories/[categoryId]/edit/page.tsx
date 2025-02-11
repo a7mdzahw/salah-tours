@@ -76,7 +76,7 @@ export default function EditCategory() {
   const updateCategoryMutation = useMutation({
     mutationFn: (data: CategoryFormData) =>
       client(`/categories/${params.categoryId}`, {
-        method: "PUT",
+        method: "POST",
         data,
       }),
     onSuccess: async () => {

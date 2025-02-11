@@ -9,8 +9,8 @@ import { Tour } from "./Tour";
 
 @Entity({ name: "tour_days" })
 export class TourDay {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryGeneratedColumn("uuid")
+  id: string;
 
   @Column({ type: "int" })
   day: number;
@@ -21,8 +21,8 @@ export class TourDay {
   @Column({ type: "text" })
   description: string;
 
-  @Column({ name: "tour_id", type: "int" })
-  tourId: number;
+  @Column({ name: "tour_id", type: "string" })
+  tourId: string;
 
   @ManyToOne(() => Tour, (tour) => tour.days, { onDelete: "CASCADE" })
   @JoinColumn({ name: "tour_id" })

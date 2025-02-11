@@ -76,7 +76,7 @@ export default function NewTour() {
   });
 
   const uploadImagesMutation = useMutation({
-    mutationFn: async (tourId: number) => {
+    mutationFn: async (tourId: string) => {
       const formData = new FormData();
       selectedImages.forEach((file) => {
         formData.append("catalogImages", file);
@@ -99,7 +99,6 @@ export default function NewTour() {
         data,
       }),
     onSuccess: async (response: Tour) => {
-      console.log(response);
       if (selectedImages.length > 0) {
         await uploadImagesMutation.mutateAsync(response.id);
       }

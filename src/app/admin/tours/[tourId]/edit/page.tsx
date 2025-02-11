@@ -30,7 +30,7 @@ const tourFormSchema = z.object({
   description: z.string().min(10, "Description must be at least 10 characters"),
   price: z.number().min(0, "Price must be positive"),
   duration: z.number().min(1, "Duration must be at least 1 hour"),
-  categoryId: z.number().min(1, "Category is required"),
+  categoryId: z.string().min(1, "Category is required"),
   image: z.string(),
   days: z.array(daySchema).min(1, "At least one day is required"),
 });
@@ -62,7 +62,7 @@ export default function EditTour() {
       description: "",
       price: 0,
       duration: 1,
-      categoryId: 0,
+      categoryId: "",
       image: "",
       days: [{ day: 1, title: "", description: "" }],
     },

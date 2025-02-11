@@ -13,7 +13,7 @@ export async function GET(
     const tourId = (await params).tourId;
 
     const tour = await tourRepository.findOne({
-      where: { id: parseInt(tourId) },
+      where: { id: tourId },
       relations: {
         category: true,
         days: true,
@@ -50,7 +50,7 @@ export async function PUT(
     await AppDataSource.manager.transaction(
       async (transactionalEntityManager) => {
         // Update tour
-        const tour = await tourRepository.findOneBy({ id: parseInt(tourId) });
+        const tour = await tourRepository.findOneBy({ id: tourId });
         if (!tour) {
           throw new Error("Tour not found");
         }
@@ -104,10 +104,10 @@ export async function DELETE(
     // Start a transaction
     await AppDataSource.manager.transaction(async () => {
       // First delete tour days
-      await tourDayRepository.delete({ tourId: parseInt(tourId) });
+      await tourDayRepository.delete({ tourId });
 
       // Then delete the tour
-      await tourRepository.delete({ id: parseInt(tourId) });
+      await tourRepository.delete({ id: tourId });
     });
 
     return NextResponse.json({ success: true });

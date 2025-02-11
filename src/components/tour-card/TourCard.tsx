@@ -3,7 +3,7 @@ import Link from "next/link";
 import React from "react";
 
 type Props = {
-  id: number;
+  id: string;
   name: string;
   imageUri?: string;
   description?: string;

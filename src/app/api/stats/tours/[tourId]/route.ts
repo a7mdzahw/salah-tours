@@ -19,7 +19,7 @@ export async function GET(
       ])
       .from("tours", "tour")
       .leftJoin("bookings", "booking", "booking.tour_id = tour.id")
-      .where("tour.id = :tourId", { tourId: parseInt(tourId) })
+      .where("tour.id = :tourId", { tourId })
       .groupBy("tour.id")
       .getRawOne();
 
@@ -31,7 +31,7 @@ export async function GET(
         "SUM(booking.number_of_people) as travelerCount",
       ])
       .from("bookings", "booking")
-      .where("booking.tour_id = :tourId", { tourId: parseInt(tourId) })
+      .where("booking.tour_id = :tourId", { tourId })
       .andWhere("booking.created_at >= :startDate", {
         startDate: new Date(new Date().setMonth(new Date().getMonth() - 6)),
       })
@@ -47,7 +47,7 @@ export async function GET(
         "SUM(booking.number_of_people) as travelerCount",
       ])
       .from("bookings", "booking")
-      .where("booking.tour_id = :tourId", { tourId: parseInt(tourId) })
+      .where("booking.tour_id = :tourId", { tourId })
       .andWhere("booking.date >= :today", { today: new Date() })
       .groupBy("booking.date")
       .orderBy("booking.date", "ASC")

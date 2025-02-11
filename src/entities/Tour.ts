@@ -11,8 +11,8 @@ import { TourDay } from "./TourDay";
 
 @Entity({ name: "tours" })
 export class Tour {
-  @PrimaryGeneratedColumn({ type: "int" })
-  id: number;
+  @PrimaryGeneratedColumn("uuid")
+  id: string;
 
   @Column({ type: "varchar" })
   name: string;
@@ -26,8 +26,8 @@ export class Tour {
   @Column({ type: "int" })
   duration: number;
 
-  @Column({ name: "category_id", type: "int" })
-  categoryId: number;
+  @Column({ name: "category_id", type: "string" })
+  categoryId: string;
 
   @Column({ type: "varchar", nullable: true })
   image: string;
