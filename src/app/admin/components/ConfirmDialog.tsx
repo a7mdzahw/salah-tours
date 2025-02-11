@@ -8,9 +8,14 @@ interface ConfirmDialogProps {
   onConfirm: () => void;
 }
 
-export function ConfirmDialog({ t, title, message, onConfirm }: ConfirmDialogProps) {
+export function ConfirmDialog({
+  t,
+  title,
+  message,
+  onConfirm,
+}: ConfirmDialogProps) {
   return (
-    <div className="bg-white shadow-lg rounded-lg p-6 max-w-sm w-full">
+    <div className="rounded-lg p-6 max-w-sm w-[400px]">
       <h3 className="text-lg font-semibold text-gray-900 mb-2">{title}</h3>
       <p className="text-sm text-gray-500 mb-4">{message}</p>
       <div className="flex justify-end gap-3">
@@ -34,4 +39,4 @@ export function ConfirmDialog({ t, title, message, onConfirm }: ConfirmDialogPro
       </div>
     </div>
   );
-} 
+}

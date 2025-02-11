@@ -50,7 +50,7 @@ export default function CategoriesManagement() {
             }),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["categories"] });
-            toast.success("Category deleted successfully");
+            toast.success("Category deleted successfully", { position: "bottom-center" });
         },
         onError: (error: AxiosError<{ error: string }>) => {
             toast.error(error.response?.data?.error || "Failed to delete category");
@@ -68,6 +68,7 @@ export default function CategoriesManagement() {
         ), {
             duration: Infinity,
             position: "top-center",
+            className: '!max-w-fit'
         });
     };
 
