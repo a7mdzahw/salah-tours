@@ -1,10 +1,20 @@
 import { NextResponse } from "next/server";
 import { AppDataSource, initializeDB } from "@lib/db";
 import { Category } from "@entities/Category";
+import { formdataToJS } from "@helpers/formdataToJS";
+import { uploadToBlob } from "@lib/vercel-blob";
+import { File as FileEntity } from "@entities/File";
+
+interface UpdateCategoryDTO {
+  name: string;
+  description: string;
+  parentCategoryId: string | null;
+  image: File;
+}
 
 export async function GET(
   request: Request,
-  { params }: { params: Promise<{ categoryId: string }> },
+  { params }: { params: Promise<{ categoryId: string }> }
 ) {
   try {
     const categoryId = (await params).categoryId;
@@ -16,13 +26,14 @@ export async function GET(
       relations: {
         subCategories: true,
         tours: true,
+        image: true,
       },
     });
 
     if (!category) {
       return NextResponse.json(
         { error: "Category not found" },
-        { status: 404 },
+        { status: 404 }
       );
     }
 
@@ -31,51 +42,84 @@ export async function GET(
     console.error("Error fetching category:", error);
     return NextResponse.json(
       { error: "Failed to fetch category" },
-      { status: 500 },
+      { status: 500 }
     );
   }
 }
 
 export async function PUT(
   request: Request,
-  { params }: { params: Promise<{ categoryId: string }> },
+  { params }: { params: Promise<{ categoryId: string }> }
 ) {
   try {
     await initializeDB();
     const categoryId = (await params).categoryId;
-    const body = await request.json();
-    const { name, description, imageUri, parentCategoryId } = body;
+    const body = await request.formData();
+    const { name, description, parentCategoryId, image } =
+      formdataToJS<UpdateCategoryDTO>(body);
 
-    const categoryRepository = AppDataSource.getRepository(Category);
+    // Use transaction for database operations
+    const result = await AppDataSource.manager.transaction(
+      async (transactionalEntityManager) => {
+        const category = await transactionalEntityManager.findOne(Category, {
+          where: { id: categoryId },
+          relations: { image: true },
+        });
 
-    const category = await categoryRepository.findOneBy({ id: categoryId });
+        if (!category) {
+          throw new Error("Category not found");
+        }
 
-    if (!category) {
-      return NextResponse.json(
-        { error: "Category not found" },
-        { status: 404 },
-      );
-    }
+        // Update basic category info
+        category.name = name;
+        category.description = description;
+        category.parentCategoryId = parentCategoryId || null;
 
-    category.name = name;
-    category.description = description;
-    category.imageUri = imageUri;
-    category.parentCategoryId = parentCategoryId || null;
+        // Handle image update if provided
+        if (image instanceof File) {
+          const { file: uploadedFile } = await uploadToBlob([image]);
 
-    await categoryRepository.save(category);
-    return NextResponse.json(category);
+          // Remove old image if exists
+          if (category.image) {
+            await transactionalEntityManager.remove(FileEntity, category.image);
+          }
+
+          // Create new file
+          const file = await transactionalEntityManager.save(FileEntity, {
+            url: uploadedFile.url,
+            mimeType: uploadedFile.mimeType,
+            filename: uploadedFile.filename,
+            size: uploadedFile.size,
+          });
+
+          category.image = file;
+        }
+
+        await transactionalEntityManager.save(Category, category);
+
+        return category;
+      }
+    );
+
+    return NextResponse.json(result);
   } catch (error) {
     console.error("Error updating category:", error);
+    if (error instanceof Error && error.message === "Category not found") {
+      return NextResponse.json(
+        { error: "Category not found" },
+        { status: 404 }
+      );
+    }
     return NextResponse.json(
       { error: "Failed to update category" },
-      { status: 500 },
+      { status: 500 }
     );
   }
 }
 
 export async function DELETE(
   request: Request,
-  { params }: { params: Promise<{ categoryId: string }> },
+  { params }: { params: Promise<{ categoryId: string }> }
 ) {
   try {
     await initializeDB();
@@ -90,14 +134,14 @@ export async function DELETE(
     if (!category) {
       return NextResponse.json(
         { error: "Category not found" },
-        { status: 404 },
+        { status: 404 }
       );
     }
 
     if (category.tours?.length > 0) {
       return NextResponse.json(
         { error: "Cannot delete category with associated tours" },
-        { status: 400 },
+        { status: 400 }
       );
     }
 
@@ -107,7 +151,7 @@ export async function DELETE(
     console.error("Error deleting category:", error);
     return NextResponse.json(
       { error: "Failed to delete category" },
-      { status: 500 },
+      { status: 500 }
     );
   }
 }

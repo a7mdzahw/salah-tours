@@ -51,52 +51,14 @@ export default function InfoManagement() {
   useEffect(() => {
     if (info) {
       reset(info);
-      if (info.bannerUrl) {
-        setPreviewBannerUrl(info.bannerUrl);
+      if (info.bannerImage) {
+        setPreviewBannerUrl(info.bannerImage.url);
       }
-      if (info.heroUrl) {
-        setPreviewHeroUrl(info.heroUrl);
+      if (info.heroImage) {
+        setPreviewHeroUrl(info.heroImage.url);
       }
     }
   }, [info, reset]);
-
-  const uploadImagesMutation = useMutation({
-    mutationFn: async () => {
-      const uploads = [];
-
-      if (selectedBanner) {
-        const formData = new FormData();
-        formData.append("image", selectedBanner);
-        formData.append("type", "banner");
-        uploads.push(
-          client("/info/images", {
-            method: "POST",
-            data: formData,
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          })
-        );
-      }
-
-      if (selectedHero) {
-        const formData = new FormData();
-        formData.append("image", selectedHero);
-        formData.append("type", "hero");
-        uploads.push(
-          client("/info/images", {
-            method: "POST",
-            data: formData,
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          })
-        );
-      }
-
-      return Promise.all(uploads);
-    },
-  });
 
   const handleBannerChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -128,12 +90,16 @@ export default function InfoManagement() {
     mutationFn: (data: InfoFormData) =>
       client("/info", {
         method: "PUT",
-        data,
+        data: {
+          ...data,
+          bannerImage: selectedBanner,
+          heroImage: selectedHero,
+        },
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
       }),
     onSuccess: async () => {
-      if (selectedBanner || selectedHero) {
-        await uploadImagesMutation.mutateAsync();
-      }
       router.refresh();
     },
   });
@@ -259,15 +225,9 @@ export default function InfoManagement() {
             <Button
               type="submit"
               color="primary"
-              disabled={
-                isSubmitting ||
-                updateInfoMutation.isPending ||
-                uploadImagesMutation.isPending
-              }
+              disabled={isSubmitting || updateInfoMutation.isPending}
             >
-              {updateInfoMutation.isPending || uploadImagesMutation.isPending
-                ? "Saving..."
-                : "Save Changes"}
+              {updateInfoMutation.isPending ? "Saving..." : "Save Changes"}
             </Button>
           </div>
         </div>

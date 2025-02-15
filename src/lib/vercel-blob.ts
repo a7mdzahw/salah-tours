@@ -1,20 +1,15 @@
+import { put } from "@vercel/blob";
 import { NextResponse } from "next/server";
 
-interface UploadedFile {
-  filename: string;
-  originalname: string;
+interface FileParams {
   url: string;
+  filename: string;
   size: number;
+  mimeType: string;
 }
 
-export async function uploadToHippo(
-  formData: FormData,
-  fieldName: string,
-  maxCount = 1
-) {
+export async function uploadToBlob(files: File[], maxCount = 1) {
   try {
-    const files = formData.getAll(fieldName);
-
     if (!files.length) {
       throw new Error("No files uploaded");
     }
@@ -23,7 +18,8 @@ export async function uploadToHippo(
       throw new Error(`Maximum ${maxCount} files allowed`);
     }
 
-    const savedFiles: UploadedFile[] = [];
+    // create saved files array
+    const savedFiles: FileParams[] = [];
 
     for (const file of files) {
       if (!(file instanceof File)) continue;
@@ -40,30 +36,20 @@ export async function uploadToHippo(
         throw new Error("File size cannot be larger than 5MB");
       }
 
-      // Create form data for ImgHippo API
-      const hippoFormData = new FormData();
-      hippoFormData.append("file", file);
-      hippoFormData.append("api_key", process.env.IMAGE_STORAGE_API_KEY!);
-      hippoFormData.append("title", file.name);
-
-      // Upload to ImgHippo
-      const response = await fetch(process.env.IMAGE_STORAGE_API_URL!, {
-        method: "POST",
-        body: hippoFormData,
+      // Upload to Vercel Blob
+      const { url } = await put(file.name, file, {
+        access: "public",
+        token: process.env.BLOB_READ_WRITE_TOKEN,
       });
 
-      if (!response.ok) {
-        throw new Error("Failed to upload image to ImgHippo");
-      }
-
-      const { data } = await response.json();
-
-      savedFiles.push({
+      const savedFile = {
+        url: url,
         filename: file.name,
-        originalname: file.name,
-        url: data.url,
         size: file.size,
-      });
+        mimeType: file.type,
+      };
+
+      savedFiles.push(savedFile);
     }
 
     return {

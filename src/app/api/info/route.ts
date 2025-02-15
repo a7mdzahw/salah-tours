@@ -1,6 +1,16 @@
 import { NextResponse } from "next/server";
 import { AppDataSource, initializeDB } from "@lib/db";
 import { Info } from "@entities/Info";
+import { formdataToJS } from "@helpers/formdataToJS";
+import { uploadToBlob } from "@lib/vercel-blob";
+import { File as FileEntity } from "@entities/File";
+
+interface UpdateInfoDTO {
+  title: string;
+  description: string;
+  bannerImage?: File;
+  heroImage?: File;
+}
 
 export async function GET() {
   try {
@@ -8,6 +18,10 @@ export async function GET() {
     const infoRepository = AppDataSource.getRepository(Info);
     const info = await infoRepository.findOne({
       where: { id: 1 },
+      relations: {
+        bannerImage: true,
+        heroImage: true,
+      },
     });
 
     return NextResponse.json(info);
@@ -22,31 +36,78 @@ export async function GET() {
 
 export async function PUT(request: Request) {
   try {
-    const body = await request.json();
-    const { title, description, bannerUrl } = body;
+    const body = await request.formData();
+    const { title, description, bannerImage, heroImage } = formdataToJS<UpdateInfoDTO>(body);
 
-    const infoRepository = AppDataSource.getRepository(Info);
-    let info = await infoRepository.findOne({
-      where: { id: 1 },
+    // Use transaction for database operations
+    const result = await AppDataSource.manager.transaction(async (transactionalEntityManager) => {
+      let info = await transactionalEntityManager.findOne(Info, {
+        where: { id: 1 },
+        relations: {
+          bannerImage: true,
+          heroImage: true,
+        },
+      });
+
+      if (!info) {
+        // Create new info if it doesn't exist
+        info = transactionalEntityManager.create(Info, {
+          id: 1,
+          title,
+          description,
+        });
+      } else {
+        // Update existing info
+        info.title = title;
+        info.description = description;
+      }
+
+      // Handle banner image upload
+      if (bannerImage instanceof File) {
+        const { file: uploadedBanner } = await uploadToBlob([bannerImage]);
+
+        // Remove old banner image if exists
+        if (info.bannerImage) {
+          await transactionalEntityManager.remove(FileEntity, info.bannerImage);
+        }
+
+        // Create new banner file
+        const bannerFile = transactionalEntityManager.create(FileEntity, {
+          url: uploadedBanner.url,
+          mimeType: uploadedBanner.mimeType,
+          filename: uploadedBanner.filename,
+          size: uploadedBanner.size,
+        });
+
+        await transactionalEntityManager.save(FileEntity, bannerFile);
+        info.bannerImage = bannerFile;
+      }
+
+      // Handle hero image upload
+      if (heroImage instanceof File) {
+        const { file: uploadedHero } = await uploadToBlob([heroImage]);
+
+        // Remove old hero image if exists
+        if (info.heroImage) {
+          await transactionalEntityManager.remove(FileEntity, info.heroImage);
+        }
+
+        // Create new hero file
+        const heroFile = transactionalEntityManager.create(FileEntity, {
+          url: uploadedHero.url,
+          mimeType: uploadedHero.mimeType,
+          filename: uploadedHero.filename,
+          size: uploadedHero.size,
+        });
+
+        await transactionalEntityManager.save(FileEntity, heroFile);
+        info.heroImage = heroFile;
+      }
+
+      return await transactionalEntityManager.save(Info, info);
     });
 
-    if (!info) {
-      // Create new info if it doesn't exist
-      info = infoRepository.create({
-        id: 1,
-        title,
-        description,
-        bannerUrl,
-      });
-    } else {
-      // Update existing info
-      info.title = title;
-      info.description = description;
-      info.bannerUrl = bannerUrl;
-    }
-
-    await infoRepository.save(info);
-    return NextResponse.json(info);
+    return NextResponse.json(result);
   } catch (error) {
     console.error("Error updating info:", error);
     return NextResponse.json(

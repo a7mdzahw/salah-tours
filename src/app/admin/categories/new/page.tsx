@@ -33,33 +33,19 @@ export default function NewCategory() {
     resolver: zodResolver(categoryFormSchema),
   });
 
-  const uploadImageMutation = useMutation({
-    mutationFn: async (categoryId: string) => {
-      if (!selectedImage) return;
-
-      const formData = new FormData();
-      formData.append("image", selectedImage);
-
-      return client(`/categories/${categoryId}/image`, {
-        method: "POST",
-        data: formData,
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
-    },
-  });
-
   const createCategoryMutation = useMutation({
     mutationFn: (data: CategoryFormData) =>
       client<Category>("/categories", {
         method: "POST",
-        data,
+        data: {
+          ...data,
+          image: selectedImage,
+        },
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
       }),
-    onSuccess: async (response) => {
-      if (selectedImage) {
-        await uploadImageMutation.mutateAsync(response.id);
-      }
+    onSuccess: async () => {
       router.push("/admin/categories");
     },
   });
@@ -209,12 +195,9 @@ export default function NewCategory() {
             <Button
               type="submit"
               color="primary"
-              disabled={
-                createCategoryMutation.isPending ||
-                uploadImageMutation.isPending
-              }
+              disabled={createCategoryMutation.isPending}
             >
-              {createCategoryMutation.isPending || uploadImageMutation.isPending
+              {createCategoryMutation.isPending
                 ? "Creating..."
                 : "Create Category"}
             </Button>

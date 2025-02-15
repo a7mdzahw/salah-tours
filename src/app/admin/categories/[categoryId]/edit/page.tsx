@@ -27,7 +27,11 @@ export default function EditCategory() {
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string>("");
 
-  const { data: category, isLoading, error } = useQuery<Category>({
+  const {
+    data: category,
+    isLoading,
+    error,
+  } = useQuery<Category>({
     queryKey: ["categories", params.categoryId],
     queryFn: () => client<Category>(`/categories/${params.categoryId}`),
   });
@@ -53,37 +57,23 @@ export default function EditCategory() {
         description: category.description,
         parentCategoryId: category.parentCategoryId || "",
       });
-      setPreviewUrl(category.imageUri || "");
+      setPreviewUrl(category.image?.url || "");
     }
   }, [category, reset]);
-
-  const uploadImageMutation = useMutation({
-    mutationFn: async () => {
-      if (!selectedImage) return;
-
-      const formData = new FormData();
-      formData.append("image", selectedImage);
-
-      return client(`/categories/${params.categoryId}/image`, {
-        method: "POST",
-        data: formData,
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
-    },
-  });
 
   const updateCategoryMutation = useMutation({
     mutationFn: (data: CategoryFormData) =>
       client(`/categories/${params.categoryId}`, {
         method: "PUT",
-        data,
+        data: {
+          ...data,
+          image: selectedImage,
+        },
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
       }),
     onSuccess: async () => {
-      if (selectedImage) {
-        await uploadImageMutation.mutateAsync();
-      }
       router.push("/admin/categories");
     },
   });
@@ -110,8 +100,8 @@ export default function EditCategory() {
   };
 
   return (
-    <QueryLoader 
-      isLoading={isLoading} 
+    <QueryLoader
+      isLoading={isLoading}
       error={error}
       loadingText="Loading category..."
     >
@@ -140,7 +130,9 @@ export default function EditCategory() {
                 className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 focus:border-primary-500 focus:outline-none focus:ring-primary-500"
               />
               {errors.name && (
-                <p className="mt-1 text-sm text-red-600">{errors.name.message}</p>
+                <p className="mt-1 text-sm text-red-600">
+                  {errors.name.message}
+                </p>
               )}
             </div>
 
@@ -234,12 +226,9 @@ export default function EditCategory() {
               <Button
                 type="submit"
                 color="primary"
-                disabled={
-                  updateCategoryMutation.isPending ||
-                  uploadImageMutation.isPending
-                }
+                disabled={updateCategoryMutation.isPending}
               >
-                {updateCategoryMutation.isPending || uploadImageMutation.isPending
+                {updateCategoryMutation.isPending
                   ? "Saving..."
                   : "Save Changes"}
               </Button>

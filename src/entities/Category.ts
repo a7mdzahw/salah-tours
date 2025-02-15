@@ -5,9 +5,10 @@ import {
   ManyToOne,
   OneToMany,
   JoinColumn,
+  OneToOne,
 } from "typeorm";
 import { Tour } from "./Tour";
-
+import { File } from "./File";
 @Entity({ name: "categories" })
 export class Category {
   @PrimaryGeneratedColumn("uuid")
@@ -19,8 +20,9 @@ export class Category {
   @Column({ type: "text", nullable: true })
   description: string;
 
-  @Column({ name: "imageUri", nullable: true, type: "varchar" })
-  imageUri: string;
+  @OneToOne(() => File, { nullable: true, onDelete: "SET NULL" })
+  @JoinColumn({ name: "category_image_id" })
+  image: File | null;
 
   @Column({ name: "parent_category_id", nullable: true, type: "varchar" })
   parentCategoryId: string | null;

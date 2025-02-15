@@ -4,12 +4,8 @@
 import { useQuery } from "@tanstack/react-query";
 import { client } from "@salah-tours/helpers/client";
 import { motion } from "framer-motion";
+import { Info } from "@salah-tours/entities/Info";
 
-interface Info {
-  title: string;
-  description: string;
-  bannerUrl: string;
-}
 
 const InfoSection = () => {
   const { data: info } = useQuery<Info>({
@@ -50,9 +46,9 @@ const InfoSection = () => {
               className="relative lg:order-1"
             >
               <div className="relative aspect-[4/3] overflow-hidden rounded-2xl shadow-xl ring-1 ring-white/10">
-                {info?.bannerUrl && (
+                {info?.bannerImage?.url && (
                   <img
-                    src={info.bannerUrl}
+                    src={info.bannerImage.url}
                     alt="Featured destination"
                     className="absolute inset-0 h-full w-full object-cover"
                   />

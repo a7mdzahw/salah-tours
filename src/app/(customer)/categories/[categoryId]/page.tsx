@@ -27,7 +27,7 @@ export default function CategoryDetails() {
         <section
           className="py-24 text-center relative "
           style={{
-            backgroundImage: `url(${category?.imageUri})`,
+            backgroundImage: `url(${category?.image?.url})`,
             backgroundSize: "cover",
             backgroundPosition: "center",
           }}
@@ -57,7 +57,7 @@ export default function CategoryDetails() {
                   key={category.name}
                   id={category.id}
                   name={category.name}
-                  imageUri={category.imageUri}
+                  imageUri={category.image?.url}
                   description={category.description}
                 />
               ))}
@@ -78,7 +78,7 @@ export default function CategoryDetails() {
                   key={tour.id}
                   id={tour.id}
                   name={tour.name}
-                  imageUri={tour.catalogImages?.[0]}
+                  imageUri={tour.catalogImages?.[0]?.url}
                   description={tour.description}
                 />
               ))}

@@ -33,7 +33,7 @@ const Categories = () => {
               key={category.name}
               id={category.id}
               name={category.name}
-              imageUri={category.imageUri}
+              imageUri={category.image?.url}
               description={category.description}
             />
           ))}

@@ -45,7 +45,7 @@ const TourDetails = () => {
       </section>
 
       <section className="p-8 w-full md:w-2/3 md:mx-auto">
-        <ImageSlider images={tour?.catalogImages || []} />
+        <ImageSlider images={tour?.catalogImages?.map((image) => image.url) || []} />
       </section>
 
       <section className="px-8">

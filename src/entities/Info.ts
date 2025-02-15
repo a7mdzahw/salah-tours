@@ -1,4 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, OneToOne, JoinColumn } from "typeorm";
+import { File } from "./File";
 
 @Entity({ name: "info" })
 export class Info {
@@ -11,9 +12,11 @@ export class Info {
   @Column({ type: "text" })
   description: string;
 
-  @Column({ name: "bannerUrl", type: "varchar", nullable: true })
-  bannerUrl: string;
+  @OneToOne(() => File, { nullable: true, onDelete: "SET NULL" })
+  @JoinColumn({ name: "banner_image_id" })
+  bannerImage: File | null;
 
-  @Column({ type: "varchar", nullable: true })
-  heroUrl: string;
+  @OneToOne(() => File, { nullable: true, onDelete: "SET NULL" })
+  @JoinColumn({ name: "hero_image_id" })
+  heroImage: File | null;
 }

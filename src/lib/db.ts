@@ -5,25 +5,14 @@ import { TourDay } from "@entities/TourDay";
 import { Category } from "@entities/Category";
 import { Info } from "@entities/Info";
 import { Stats } from "@entities/Stats";
+import { File } from "@entities/File";
 
 export const AppDataSource = new DataSource({
   type: "postgres",
-  host: process.env.DB_HOST,
-  port: parseInt(process.env.DB_PORT || "5432"),
-  username: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
-  ssl:
-    process.env.NODE_ENV === "production"
-      ? {
-          rejectUnauthorized: false,
-        }
-      : false,
+  url: process.env.DATABASE_URL,
   synchronize: true,
   logging: process.env.NODE_ENV === "development",
-  entities: [Tour, TourDay, Category, Info, Stats],
-  subscribers: [],
-  migrations: [],
+  entities: [Tour, TourDay, Category, Info, Stats, File],
 });
 
 let initialized = false;

@@ -11,6 +11,7 @@ export async function GET() {
     const categories = await categoryRepository.find({
       relations: {
         parentCategory: true,
+        image: true,
       },
       where: {
         parentCategoryId: Not(IsNull()), // Using Not and IsNull operators for type safety

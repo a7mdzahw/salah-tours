@@ -42,7 +42,11 @@ export default function EditTour() {
   const [selectedImages, setSelectedImages] = useState<File[]>([]);
   const [previewUrls, setPreviewUrls] = useState<string[]>([]);
 
-  const { data: tour, isLoading, error } = useQuery<Tour>({
+  const {
+    data: tour,
+    isLoading,
+    error,
+  } = useQuery<Tour>({
     queryKey: ["tours", params.tourId],
     queryFn: () => client<Tour>(`/tours/${params.tourId}`),
   });
@@ -81,7 +85,7 @@ export default function EditTour() {
         })),
       });
     }
-    setPreviewUrls(tour?.catalogImages || []);
+    setPreviewUrls(tour?.catalogImages?.map((image) => image.url) || []);
   }, [tour, reset]);
 
   const { fields, append, remove } = useFieldArray({
@@ -94,33 +98,19 @@ export default function EditTour() {
     queryFn: () => client<Category[]>("/categories/sub"),
   });
 
-  const uploadImagesMutation = useMutation({
-    mutationFn: async () => {
-      const formData = new FormData();
-      selectedImages.forEach((file) => {
-        formData.append("catalogImages", file);
-      });
-
-      return client(`/tours/${params.tourId}/images`, {
-        method: "POST",
-        data: formData,
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
-    },
-  });
-
   const updateTourMutation = useMutation({
     mutationFn: (data: TourFormData) =>
       client(`/tours/${params.tourId}`, {
         method: "PUT",
-        data,
+        data: {
+          ...data,
+          images: selectedImages,
+        },
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
       }),
     onSuccess: async () => {
-      if (selectedImages.length > 0) {
-        await uploadImagesMutation.mutateAsync();
-      }
       router.push("/admin/tours");
     },
   });
@@ -143,7 +133,6 @@ export default function EditTour() {
       return newPreviews;
     });
   };
-
 
   return (
     <QueryLoader isLoading={isLoading} error={error}>
@@ -390,15 +379,9 @@ export default function EditTour() {
             <Button
               type="submit"
               color="primary"
-              disabled={
-                isSubmitting ||
-                updateTourMutation.isPending ||
-                uploadImagesMutation.isPending
-              }
+              disabled={isSubmitting || updateTourMutation.isPending}
             >
-              {updateTourMutation.isPending || uploadImagesMutation.isPending
-                ? "Saving..."
-                : "Save Changes"}
+              {updateTourMutation.isPending ? "Saving..." : "Save Changes"}
             </Button>
           </div>
         </div>

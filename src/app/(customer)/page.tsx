@@ -37,7 +37,7 @@ export default function Home() {
               key={tour.id}
               id={tour.id}
               name={tour.name}
-              imageUri={tour.catalogImages?.[0]}
+              imageUri={tour.catalogImages?.[0]?.url}
               description={tour.description}
             />
           ))}

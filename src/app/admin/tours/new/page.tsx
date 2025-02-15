@@ -75,33 +75,19 @@ export default function NewTour() {
     queryFn: () => client("/categories/sub"),
   });
 
-  const uploadImagesMutation = useMutation({
-    mutationFn: async (tourId: string) => {
-      const formData = new FormData();
-      selectedImages.forEach((file) => {
-        formData.append("catalogImages", file);
-      });
-
-      return client(`/tours/${tourId}/images`, {
-        method: "POST",
-        data: formData,
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
-    },
-  });
-
   const createTourMutation = useMutation({
     mutationFn: (data: TourFormData) =>
       client<Tour>("/tours", {
         method: "POST",
-        data,
+        data: {
+          ...data,
+          images: selectedImages,
+        },
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
       }),
-    onSuccess: async (response: Tour) => {
-      if (selectedImages.length > 0) {
-        await uploadImagesMutation.mutateAsync(response.id);
-      }
+    onSuccess: async () => {
       router.push("/admin/tours");
     },
   });
@@ -297,10 +283,6 @@ export default function NewTour() {
                   />
                 </label>
               </div>
-
-              {uploadImagesMutation.isPending && (
-                <p className="text-sm text-gray-500">Uploading images...</p>
-              )}
             </div>
           </div>
 
@@ -388,15 +370,9 @@ export default function NewTour() {
             <Button
               type="submit"
               color="primary"
-              disabled={
-                isSubmitting ||
-                createTourMutation.isPending ||
-                uploadImagesMutation.isPending
-              }
+              disabled={isSubmitting || createTourMutation.isPending}
             >
-              {createTourMutation.isPending || uploadImagesMutation.isPending
-                ? "Creating..."
-                : "Create Tour"}
+              {createTourMutation.isPending ? "Creating..." : "Create Tour"}
             </Button>
           </div>
         </div>

@@ -51,7 +51,7 @@ const Header = () => {
         <MiddleHero className="bg-primary-500 h-24 flex items-center  relative justify-center">
           <div className="bg-primary-800 absolute inset-0 opacity-30" />
           <img
-            src={info?.heroUrl}
+            src={info?.heroImage?.url}
             alt="hero"
             className="w-full h-full object-cover"
           />
