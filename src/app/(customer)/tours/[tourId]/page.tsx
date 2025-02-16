@@ -28,6 +28,7 @@ const TourDetails = () => {
     <QueryLoader isLoading={isLoading} error={isError}>
       <section className="py-12 text-center relative">
         <img
+          alt={tour?.catalogImages?.[0]?.filename}
           src={tour?.catalogImages?.[0]?.url}
           className="absolute inset-0 object-center w-full h-full object-cover"
         />
@@ -39,8 +40,9 @@ const TourDetails = () => {
           </h1>
           <section className="mx-auto mt-4 px-2 text-base text-primary-100">
             <p
-              className={clsx("line-clamp-2", {
-                "line-clamp-[100]": !showMore,
+              className={clsx({
+                "line-clamp-[100]": showMore,
+                "line-clamp-2": !showMore,
               })}
             >
               {tour?.description}
@@ -52,7 +54,7 @@ const TourDetails = () => {
                 setShowMore(!showMore);
               }}
             >
-              read more
+              {showMore ? "read less" : "read more"}
             </button>
           </section>
         </article>
