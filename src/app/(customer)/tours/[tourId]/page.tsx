@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import ImageSlider from "./components/ImageSlider";
 import Button from "@salah-tours/components/ui/button/Button";
 import { useParams, useRouter } from "next/navigation";
@@ -12,6 +12,7 @@ import QueryLoader from "@salah-tours/components/ui/loader/QueryLoader";
 const TourDetails = () => {
   const { tourId } = useParams();
   const router = useRouter();
+  const [showMore, setShowMore] = useState(false);
 
   const {
     data: tour,
@@ -38,14 +39,30 @@ const TourDetails = () => {
           <h1 className="text-4xl font-bold tracking-tight text-white uppercase">
             {tour?.name}
           </h1>
-          <p className="mx-auto mt-4 max-w-3xl text-base text-primary-100">
-            {tour?.description}
+          <p className="mx-auto mt-4 max-w-3xl text-base text-primary-100 line-clamp-2">
+            {showMore ? tour?.description : tour?.description.slice(0, 100)}
+
+            <div
+              hidden={
+                tour?.description?.length
+                  ? tour?.description?.length < 100
+                  : false
+              }
+              className="text-primary-300 cursor-pointer"
+              onClick={() => {
+                setShowMore(!showMore);
+              }}
+            >
+              read more
+            </div>
           </p>
         </article>
       </section>
 
-      <section className="p-8 w-full md:w-2/3 md:mx-auto">
-        <ImageSlider images={tour?.catalogImages?.map((image) => image.url) || []} />
+      <section className="w-full pb-8">
+        <ImageSlider
+          images={tour?.catalogImages?.map((image) => image.url) || []}
+        />
       </section>
 
       <section className="px-8">

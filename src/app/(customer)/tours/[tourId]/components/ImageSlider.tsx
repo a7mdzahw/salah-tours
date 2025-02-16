@@ -2,6 +2,7 @@
 
 import React from "react";
 import Slider, { Settings } from "react-slick";
+import { ChevronRight, ChevronLeft } from "lucide-react";
 
 // Import the CSS for the carousel
 import "slick-carousel/slick/slick.css";
@@ -13,6 +14,9 @@ interface Props {
 const ImageSlider = ({ images }: Props) => {
   const settings: Settings = {
     dots: true,
+    arrows: true,
+    autoplay: true,
+    autoplaySpeed: 2000,
     infinite: images.length > 1,
     speed: 500,
     slidesToShow: 1,

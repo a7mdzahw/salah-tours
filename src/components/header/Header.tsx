@@ -72,8 +72,6 @@ const Header = () => {
             <div className="text-primary-700 flex gap-4 items-center">
               <Link href="/">Home</Link>
               <Link href="/services">Services</Link>
-              <Link href="/products">Products</Link>
-              <Link href="/blog">Blog</Link>
             </div>
           </div>
         </BottomBar>
