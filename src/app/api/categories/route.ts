@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { AppDataSource, initializeDB } from "@lib/db";
 import { Category } from "@entities/Category";
 import { uploadToBlob } from "@lib/vercel-blob";
-import { File as FileEntity } from "@entities/File";
+import { Image as FileEntity } from "@salah-tours/entities/Image";
 import { formdataToJS } from "@salah-tours/helpers/formdataToJS";
 
 export async function GET() {

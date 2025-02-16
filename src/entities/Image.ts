@@ -8,7 +8,7 @@ import {
 import { Tour } from "./Tour";
 
 @Entity()
-export class File {
+export class Image {
   @PrimaryGeneratedColumn("uuid")
   id: number;
 

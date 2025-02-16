@@ -8,7 +8,7 @@ import {
 } from "typeorm";
 import { Category } from "./Category";
 import { TourDay } from "./TourDay";
-import { File } from "./File";
+import { Image } from "./Image";
 
 @Entity({ name: "tours" })
 export class Tour {
@@ -30,11 +30,11 @@ export class Tour {
   @Column({ name: "category_id", type: "string" })
   categoryId: string;
 
-  @OneToMany(() => File, (file) => file.tour, {
+  @OneToMany(() => Image, (file) => file.tour, {
     onDelete: "SET NULL",
     nullable: true,
   })
-  catalogImages: File[];
+  catalogImages: Image[];
 
   @ManyToOne(() => Category, (category) => category.tours)
   @JoinColumn({ name: "category_id" })

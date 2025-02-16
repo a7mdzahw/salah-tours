@@ -3,7 +3,7 @@ import { AppDataSource, initializeDB } from "@lib/db";
 import { Category } from "@entities/Category";
 import { formdataToJS } from "@helpers/formdataToJS";
 import { uploadToBlob } from "@lib/vercel-blob";
-import { File as FileEntity } from "@entities/File";
+import { Image as FileEntity } from "@salah-tours/entities/Image";
 
 interface UpdateCategoryDTO {
   name: string;

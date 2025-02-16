@@ -8,7 +8,7 @@ import {
   OneToOne,
 } from "typeorm";
 import { Tour } from "./Tour";
-import { File } from "./File";
+import { Image } from "./Image";
 @Entity({ name: "categories" })
 export class Category {
   @PrimaryGeneratedColumn("uuid")
@@ -20,9 +20,9 @@ export class Category {
   @Column({ type: "text", nullable: true })
   description: string;
 
-  @OneToOne(() => File, { nullable: true, onDelete: "SET NULL" })
+  @OneToOne(() => Image, { nullable: true, onDelete: "SET NULL" })
   @JoinColumn({ name: "category_image_id" })
-  image: File | null;
+  image: Image | null;
 
   @Column({ name: "parent_category_id", nullable: true, type: "varchar" })
   parentCategoryId: string | null;

@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { AppDataSource, initializeDB } from "@lib/db";
 import { Tour } from "@entities/Tour";
 import { TourDay } from "@entities/TourDay";
-import { File as FileEntity } from "@entities/File";
+import { Image as FileEntity } from "@salah-tours/entities/Image";
 import { uploadToBlob } from "@lib/vercel-blob";
 import { formdataToJS } from "@helpers/formdataToJS";
 
