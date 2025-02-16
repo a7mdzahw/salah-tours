@@ -8,6 +8,7 @@ import { client } from "@salah-tours/helpers/client";
 import { useQuery } from "@tanstack/react-query";
 import { Tour } from "@entities/Tour";
 import QueryLoader from "@salah-tours/components/ui/loader/QueryLoader";
+import clsx from "clsx";
 
 const TourDetails = () => {
   const { tourId } = useParams();
@@ -25,29 +26,27 @@ const TourDetails = () => {
 
   return (
     <QueryLoader isLoading={isLoading} error={isError}>
-      <section
-        className="py-12 text-center relative"
-        style={{
-          background: `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(${tour?.catalogImages?.[0]?.url})`,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-        }}
-      >
+      <section className="py-12 text-center relative">
+        <img
+          src={tour?.catalogImages?.[0]?.url}
+          className="absolute inset-0 object-center w-full h-full object-cover"
+        />
         <div className="bg-primary-800 absolute z-10 inset-0 opacity-80" />
 
         <article className="z-40 relative">
           <h1 className="text-2xl font-bold tracking-tight text-white uppercase">
             {tour?.name}
           </h1>
-          <p className="mx-auto mt-4 px-2 text-base text-primary-100 line-clamp-2">
-            {showMore ? tour?.description : tour?.description.slice(0, 100)}
+          <section className="mx-auto mt-4 px-2 text-base text-primary-100">
+            <p
+              className={clsx("line-clamp-2", {
+                "line-clamp-[100]": !showMore,
+              })}
+            >
+              {tour?.description}
+            </p>
 
             <button
-              hidden={
-                tour?.description?.length
-                  ? tour?.description?.length < 100
-                  : false
-              }
               className="text-primary-300 cursor-pointer"
               onClick={() => {
                 setShowMore(!showMore);
@@ -55,7 +54,7 @@ const TourDetails = () => {
             >
               read more
             </button>
-          </p>
+          </section>
         </article>
       </section>
 
