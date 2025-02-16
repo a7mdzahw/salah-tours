@@ -9,6 +9,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Tour } from "@entities/Tour";
 import QueryLoader from "@salah-tours/components/ui/loader/QueryLoader";
 import clsx from "clsx";
+import { ChevronDown } from "lucide-react";
 
 const TourDetails = () => {
   const { tourId } = useParams();
@@ -38,25 +39,6 @@ const TourDetails = () => {
           <h1 className="text-2xl font-bold tracking-tight text-white uppercase">
             {tour?.name}
           </h1>
-          <section className="mx-auto mt-4 px-2 text-base text-primary-100">
-            <p
-              className={clsx({
-                "line-clamp-[100]": showMore,
-                "line-clamp-2": !showMore,
-              })}
-            >
-              {tour?.description}
-            </p>
-
-            <button
-              className="text-primary-300 cursor-pointer"
-              onClick={() => {
-                setShowMore(!showMore);
-              }}
-            >
-              {showMore ? "read less" : "read more"}
-            </button>
-          </section>
         </article>
       </section>
 
@@ -68,22 +50,75 @@ const TourDetails = () => {
 
       <section className="px-8">
         <h1 className="text-3xl text-primary-700 uppercase">{tour?.name}</h1>
+        <div className="text-2xl text-primary-600 mt-2 hidden md:block">
+          From ${tour?.price}
+        </div>
+        <section className="mt-4">
+          <p
+            className={clsx("text-gray-600", {
+              "line-clamp-3": !showMore,
+              "line-clamp-[100]": showMore,
+            })}
+          >
+            {tour?.description}
+          </p>
+          <button
+            className="text-primary-700 cursor-pointer"
+            onClick={() => setShowMore(!showMore)}
+          >
+            {showMore ? "read less" : "read more"}
+          </button>
+        </section>
         <hr className="border-primary-700 my-4" />
       </section>
 
-      <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 p-8">
+      <section className="flex flex-col gap-2 p-8">
+        <h2 className="text-2xl font-bold text-primary-700">Itinerary</h2>
         {tour?.days?.map((day) => (
-          <div key={day.day} className="p-4 bg-primary-100">
-            <h3 className="text-2xl font-bold">{day.title}</h3>
-            <p>{day.description}</p>
+          <div
+            key={day.day}
+            className="border-b border-primary-200 last:border-b-0"
+          >
+            <details className="group">
+              <summary className="flex items-center justify-between cursor-pointer py-4">
+                <div className="flex items-center gap-4">
+                  <h3 className="text-xl font-bold text-primary-700">
+                    {day.title}
+                  </h3>
+                </div>
+                <ChevronDown className="w-6 h-6 transform group-open:rotate-180 transition-transform text-primary-700" />
+              </summary>
+              <div className="pb-4 px-4">
+                <p className="text-gray-600">{day.description}</p>
+              </div>
+            </details>
           </div>
         ))}
       </section>
 
-      <section className="w-full p-8 flex justify-center md:justify-start">
+      {/* Desktop view */}
+      <section className="w-full p-8 hidden md:flex justify-start">
         <Button
           color="primary"
           className="!px-6 !py-3 w-96"
+          onClick={() => router.push(`/tours/${tourId}/book`)}
+        >
+          Book Now
+        </Button>
+      </section>
+
+      {/* Mobile view - fixed bottom */}
+      <section className="fixed bottom-0 left-0 right-0 bg-white shadow-xl p-4 flex flex-row-reverse items-center justify-between md:hidden">
+        <div className="text-xl font-bold text-primary-600">
+          <span className="text-sm text-primary-600">From</span>
+          <br />
+          <span className="text-xl font-bold text-primary-700">
+            $ {tour?.price}
+          </span>
+        </div>
+        <Button
+          color="primary"
+          className="!px-6 !py-3"
           onClick={() => router.push(`/tours/${tourId}/book`)}
         >
           Book Now

@@ -4,6 +4,7 @@ import localFont from "next/font/local";
 import "./globals.css";
 
 import { Providers } from "./providers";
+import ScrollToTop from "@/components/ScrollToTop";
 
 const exoFont = localFont({
   src: "../assets/fonts/Exo2.ttf",
@@ -32,6 +33,7 @@ export default function RootLayout({
       <body
         className={`${exoFont.variable} ${exoItalicFont.variable} antialiased font-exo2`}
       >
+        <ScrollToTop />
         <Providers>{children}</Providers>
       </body>
     </html>
