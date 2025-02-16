@@ -43,7 +43,7 @@ export async function GET(
   } catch (error) {
     console.error("Error fetching category:", error);
     return NextResponse.json(
-      { error: "Failed to fetch category" },
+      { error: error instanceof Error ? error.message : "Failed to fetch category" },
       { status: 500 }
     );
   }
@@ -113,7 +113,7 @@ export async function PUT(
       );
     }
     return NextResponse.json(
-      { error: "Failed to update category" },
+      { error: error instanceof Error ? error.message : "Failed to update category" },
       { status: 500 }
     );
   }
@@ -152,7 +152,7 @@ export async function DELETE(
   } catch (error) {
     console.error("Error deleting category:", error);
     return NextResponse.json(
-      { error: "Failed to delete category" },
+      { error: error instanceof Error ? error.message : "Failed to delete category" },
       { status: 500 }
     );
   }

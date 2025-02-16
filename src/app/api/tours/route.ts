@@ -42,7 +42,7 @@ export async function GET() {
   } catch (error) {
     console.error("Error fetching tours:", error);
     return NextResponse.json(
-      { error: "Failed to fetch tours" },
+      { error: error instanceof Error ? error.message : "Failed to fetch tours" },
       { status: 500 }
     );
   }
@@ -81,7 +81,7 @@ export async function POST(request: Request) {
 
         // Handle image uploads if any
         if (images?.length) {
-          const { files } = await uploadToBlob(images);
+          const { files } = await uploadToBlob(images, 5);
 
           const uploadedImages = files?.map((uploadedFile) => ({
             url: uploadedFile.url,
@@ -107,7 +107,7 @@ export async function POST(request: Request) {
   } catch (error) {
     console.error("Error creating tour:", error);
     return NextResponse.json(
-      { error: "Failed to create tour" },
+      { error: error instanceof Error ? error.message : "Failed to create tour" },
       { status: 500 }
     );
   }

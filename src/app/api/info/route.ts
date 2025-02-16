@@ -28,8 +28,8 @@ export async function GET() {
   } catch (error) {
     console.error("Error fetching info:", error);
     return NextResponse.json(
-      { error: "Failed to fetch info" },
-      { status: 500 },
+      { error: error instanceof Error ? error.message : "Failed to fetch info" },
+      { status: 500 }
     );
   }
 }
@@ -111,8 +111,8 @@ export async function PUT(request: Request) {
   } catch (error) {
     console.error("Error updating info:", error);
     return NextResponse.json(
-      { error: "Failed to update info" },
-      { status: 500 },
+      { error: error instanceof Error ? error.message : "Failed to update info" },
+      { status: 500 }
     );
   }
 }

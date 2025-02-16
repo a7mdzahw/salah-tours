@@ -23,7 +23,7 @@ interface UpdateTourDTO {
 
 export async function GET(
   request: Request,
-  { params }: { params: Promise<{ tourId: string }> },
+  { params }: { params: Promise<{ tourId: string }> }
 ) {
   try {
     await initializeDB();
@@ -48,7 +48,7 @@ export async function GET(
     console.error("Error fetching tour:", error);
     return NextResponse.json(
       { error: "Failed to fetch tour" },
-      { status: 500 },
+      { status: 500 }
     );
   }
 }
@@ -105,10 +105,13 @@ export async function PUT(
         if (images?.length) {
           // Remove old images
           if (tour.catalogImages?.length) {
-            await transactionalEntityManager.remove(FileEntity, tour.catalogImages);
+            await transactionalEntityManager.remove(
+              FileEntity,
+              tour.catalogImages
+            );
           }
 
-          const { files } = await uploadToBlob(images);
+          const { files } = await uploadToBlob(images, 5);
 
           const uploadedImages = files.map((uploadedFile) => ({
             url: uploadedFile.url,
@@ -134,10 +137,7 @@ export async function PUT(
   } catch (error) {
     console.error("Error updating tour:", error);
     if (error instanceof Error && error.message === "Tour not found") {
-      return NextResponse.json(
-        { error: "Tour not found" },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: "Tour not found" }, { status: 404 });
     }
     return NextResponse.json(
       { error: "Failed to update tour" },
@@ -148,7 +148,7 @@ export async function PUT(
 
 export async function DELETE(
   request: Request,
-  { params }: { params: Promise<{ tourId: string }> },
+  { params }: { params: Promise<{ tourId: string }> }
 ) {
   try {
     await initializeDB();
@@ -170,7 +170,7 @@ export async function DELETE(
     console.error("Error deleting tour:", error);
     return NextResponse.json(
       { error: "Failed to delete tour" },
-      { status: 500 },
+      { status: 500 }
     );
   }
 }
