@@ -28,7 +28,7 @@ const TourDetails = () => {
       <section
         className="py-12 text-center relative"
         style={{
-          backgroundImage: `url(${tour?.catalogImages?.[0]?.url})`,
+          background: `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(${tour?.catalogImages?.[0]?.url})`,
           backgroundSize: "cover",
           backgroundPosition: "center",
         }}
@@ -42,7 +42,7 @@ const TourDetails = () => {
           <p className="mx-auto mt-4 px-2 text-base text-primary-100 line-clamp-2">
             {showMore ? tour?.description : tour?.description.slice(0, 100)}
 
-            <div
+            <button
               hidden={
                 tour?.description?.length
                   ? tour?.description?.length < 100
@@ -54,7 +54,7 @@ const TourDetails = () => {
               }}
             >
               read more
-            </div>
+            </button>
           </p>
         </article>
       </section>

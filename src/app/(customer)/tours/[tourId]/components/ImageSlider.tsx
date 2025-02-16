@@ -40,14 +40,13 @@ const ImageSlider = ({ images }: Props) => {
   return (
     <Slider {...settings}>
       {images.map((image) => (
-        <div key={image + Math.random()} className="w-full">
-          <img
-            className="h-[550px] object-cover max-w-full object-center"
-            height="50"
-            alt={image}
-            src={image}
-          />
-        </div>
+        <img
+          key={image}
+          className="h-[550px] object-cover max-w-full object-center mx-auto"
+          height="50"
+          alt={image}
+          src={image}
+        />
       ))}
     </Slider>
   );
