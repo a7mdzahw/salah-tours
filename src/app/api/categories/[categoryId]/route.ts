@@ -27,7 +27,9 @@ export async function GET(
         subCategories: {
           image: true,
         },
-        tours: true,
+        tours: {
+          catalogImages: true,
+        },
         image: true,
       },
     });
