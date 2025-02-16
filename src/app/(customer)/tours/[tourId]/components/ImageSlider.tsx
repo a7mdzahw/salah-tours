@@ -12,10 +12,12 @@ interface Props {
 const ImageSlider = ({ images }: Props) => {
   const settings: Settings = {
     dots: true,
-    arrows: true,
     autoplay: true,
     autoplaySpeed: 2000,
     infinite: images.length > 1,
+    className: "w-full overflow-hidden",
+    pauseOnHover: true,
+
     speed: 500,
     slidesToShow: 1,
     slidesToScroll: 1,
@@ -40,7 +42,7 @@ const ImageSlider = ({ images }: Props) => {
       {images.map((image) => (
         <div key={image + Math.random()} className="w-full">
           <img
-            className="h-[550px] object-cover w-full object-center"
+            className="h-[550px] object-cover max-w-full object-center"
             height="50"
             alt={image}
             src={image}

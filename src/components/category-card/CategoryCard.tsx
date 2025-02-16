@@ -25,7 +25,7 @@ const CategoryCard = (props: Props) => {
         <div className="absolute inset-0 flex items-end p-6">
           <div>
             <h3 className="font-semibold text-white">{props.name}</h3>
-            <p aria-hidden="true" className="mt-1 text-sm text-white">
+            <p aria-hidden="true" className="mt-1 text-sm text-white line-clamp-2">
               {props.description}
             </p>
           </div>

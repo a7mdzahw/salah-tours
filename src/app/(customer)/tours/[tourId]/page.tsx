@@ -26,7 +26,7 @@ const TourDetails = () => {
   return (
     <QueryLoader isLoading={isLoading} error={isError}>
       <section
-        className="py-24 text-center relative"
+        className="py-12 text-center relative"
         style={{
           backgroundImage: `url(${tour?.catalogImages?.[0]?.url})`,
           backgroundSize: "cover",
@@ -36,10 +36,10 @@ const TourDetails = () => {
         <div className="bg-primary-800 absolute z-10 inset-0 opacity-80" />
 
         <article className="z-40 relative">
-          <h1 className="text-4xl font-bold tracking-tight text-white uppercase">
+          <h1 className="text-2xl font-bold tracking-tight text-white uppercase">
             {tour?.name}
           </h1>
-          <p className="mx-auto mt-4 max-w-3xl text-base text-primary-100 line-clamp-2">
+          <p className="mx-auto mt-4 px-2 text-base text-primary-100 line-clamp-2">
             {showMore ? tour?.description : tour?.description.slice(0, 100)}
 
             <div
