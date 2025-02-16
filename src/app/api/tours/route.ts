@@ -27,7 +27,9 @@ export async function GET() {
 
     const tours = await tourRepository.find({
       relations: {
-        category: true,
+        category: {
+          image: true,
+        },
         days: true,
         catalogImages: true,
       },
@@ -66,7 +68,7 @@ export async function POST(request: Request) {
         });
 
         // Create and save tour days
-        const tourDays = days.map((day) =>
+        const tourDays = days?.map((day) =>
           transactionalEntityManager.create(TourDay, {
             tourId: tour.id,
             day: day.day,
@@ -81,7 +83,7 @@ export async function POST(request: Request) {
         if (images?.length) {
           const { files } = await uploadToBlob(images);
 
-          const uploadedImages = files.map((uploadedFile) => ({
+          const uploadedImages = files?.map((uploadedFile) => ({
             url: uploadedFile.url,
             mimeType: uploadedFile.mimeType,
             filename: uploadedFile.filename,

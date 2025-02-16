@@ -24,7 +24,9 @@ export async function GET(
     const category = await categoryRepository.findOne({
       where: { id: categoryId },
       relations: {
-        subCategories: true,
+        subCategories: {
+          image: true,
+        },
         tours: true,
         image: true,
       },
