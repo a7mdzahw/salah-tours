@@ -7,7 +7,7 @@ import {
 } from "typeorm";
 import { Tour } from "./Tour";
 
-@Entity()
+@Entity({ name: "images" })
 export class Image {
   @PrimaryGeneratedColumn("uuid")
   id: number;
